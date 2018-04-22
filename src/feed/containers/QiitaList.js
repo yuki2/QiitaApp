@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, FlatList, Platform } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
 
 import QiitaCell from './QiitaCell';
@@ -9,11 +9,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    ...Platform.select({
-      ios: {
-        marginTop: 64,
-      },
-    }),
   },
   listView: {
     flex: 1,
@@ -25,13 +20,16 @@ export default class QiitaList extends Component {
   static defaultProps = {
     items: [],
     loaded: false,
+    onSelectItem: () => {},
   };
 
   selectItem = () => {};
 
   renderLoadingView = () => <QiitaIndicator />;
 
-  renderItem = ({ item }) => <QiitaCell onSelect={() => this.selectItem(item)} item={item} />;
+  renderItem = ({ item }) => (
+    <QiitaCell onSelect={() => this.props.onSelectItem(item)} item={item} />
+  );
 
   renderListView = () => (
     <View style={styles.container}>
@@ -55,4 +53,5 @@ export default class QiitaList extends Component {
 QiitaList.propTypes = {
   items: PropTypes.array,
   loaded: PropTypes.bool,
+  onSelectItem: PropTypes.func,
 };
