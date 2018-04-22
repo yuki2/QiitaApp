@@ -1,5 +1,11 @@
 import { Navigation } from 'react-native-navigation';
+import { Provider } from 'react-redux';
+
 import registerScreens from './registerScreens';
+import configureStore from './configureStore';
+
+const store = configureStore();
+registerScreens(store, Provider);
 
 const navigatorStyle = {
   navBarTranslucent: true,
@@ -9,8 +15,6 @@ const navigatorStyle = {
   statusBarTextColorScheme: 'light',
   drawUnderTabBar: true,
 };
-
-registerScreens();
 
 Navigation.startTabBasedApp({
   tabs: [

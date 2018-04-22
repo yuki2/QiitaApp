@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, FlatList, Platform } from 'react-native';
+import PropTypes from 'prop-types';
 
 import QiitaCell from './QiitaCell';
 import QiitaIndicator from './QiitaIndicator';
-
-const QIITA_URL = 'https://qiita.com/api/v2/tags/reactjs/items';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,34 +22,12 @@ const styles = StyleSheet.create({
 });
 
 export default class QiitaList extends Component {
-  // Initialize the hardcoded data
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: [],
-      loaded: false,
-    };
-  }
-
-  componentDidMount = () => {
-    this.fetchData();
+  static defaultProps = {
+    items: [],
+    loaded: false,
   };
 
   selectItem = () => {};
-
-  fetchData = () => {
-    fetch(QIITA_URL)
-      .then(response => response.json())
-      .then((responseJson) => {
-        this.setState({
-          items: responseJson,
-          loaded: true,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
 
   renderLoadingView = () => <QiitaIndicator />;
 
@@ -60,7 +37,7 @@ export default class QiitaList extends Component {
     <View style={styles.container}>
       <FlatList
         style={styles.listView}
-        data={this.state.items}
+        data={this.props.items}
         renderItem={this.renderItem}
         keyExtractor={item => item.id}
       />
@@ -68,10 +45,14 @@ export default class QiitaList extends Component {
   );
 
   render = () => {
-    if (!this.state.loaded) {
+    if (!this.props.loaded) {
       return this.renderLoadingView();
     }
-
     return this.renderListView();
   };
 }
+
+QiitaList.propTypes = {
+  items: PropTypes.array,
+  loaded: PropTypes.bool,
+};

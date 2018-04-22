@@ -7,10 +7,15 @@
     "test": "jest"
   },
   "dependencies": {
+    "keymirror": "^0.1.1",
     "prop-types": "^15.6.1",
     "react": "16.3.1",
     "react-native": "0.55.3",
-    "react-native-navigation": "^1.1.444"
+    "react-native-navigation": "^1.1.444",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
+    "redux-saga": "^0.16.0",
+    "underscore": "^1.9.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
