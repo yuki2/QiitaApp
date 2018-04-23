@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import QiitaList from './QiitaList';
-import { fetchLatestItemsStart } from '../modules/latestItems';
+import { startFetchLatestItems } from '../modules/latestItems';
 
 const mapStateToProps = state => ({
   latestItems: state.latestItems.itemModels,
@@ -11,20 +11,20 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchAllItems: () => {
-    dispatch(fetchLatestItemsStart());
+  fetchLastestItems: () => {
+    dispatch(startFetchLatestItems());
   },
 });
 
 class FeedComponent extends Component {
   static defaultProps = {
-    fetchAllItems: () => {},
+    fetchLastestItems: () => {},
     latestItems: [],
     latestItemsLoaded: false,
     navigator: {},
   };
   componentDidMount() {
-    this.props.fetchAllItems();
+    this.props.fetchLastestItems();
   }
 
   onSelectItem = (item) => {
@@ -47,7 +47,7 @@ class FeedComponent extends Component {
   }
 }
 FeedComponent.propTypes = {
-  fetchAllItems: PropTypes.func,
+  fetchLastestItems: PropTypes.func,
   latestItems: PropTypes.array,
   latestItemsLoaded: PropTypes.bool,
   navigator: PropTypes.object,

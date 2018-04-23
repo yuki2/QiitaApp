@@ -1,9 +1,7 @@
-import keyMirror from 'keymirror';
 import { put, call, takeLatest } from 'redux-saga/effects';
 
 import { fetchItemsWithQuery } from '../../common/services/QiitaApi';
-
-const STATUS = keyMirror({ processing: null, complete: null, abort: null });
+import { Status } from '../../common/constants';
 
 const FETCH_LATEST_ITEMS = 'FETCH_LATEST_ITEMS';
 
@@ -17,7 +15,12 @@ export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case FETCH_LATEST_ITEMS:
       switch (action.meta.status) {
-        case STATUS.complete:
+        case Status.PROCESSING:
+          return {
+            ...state,
+            loaded: false,
+          };
+        case Status.COMPLETE:
           return {
             ...state,
             itemModels: action.payload.itemModels,
@@ -32,30 +35,30 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function fetchLatestItemsStart() {
-  return { type: FETCH_LATEST_ITEMS, meta: { status: STATUS.processing } };
+export function startFetchLatestItems() {
+  return { type: FETCH_LATEST_ITEMS, meta: { status: Status.PROCESSING } };
 }
 
-export function fetchLatestItemsCompleted({ itemModels }) {
-  return { type: FETCH_LATEST_ITEMS, payload: { itemModels }, meta: { status: STATUS.complete } };
+export function completeFetchLatestItems({ itemModels }) {
+  return { type: FETCH_LATEST_ITEMS, payload: { itemModels }, meta: { status: Status.COMPLETE } };
 }
 
-export function fetchLatestItemsAborted({ error }) {
-  return { type: FETCH_LATEST_ITEMS, payload: { error }, meta: { status: STATUS.abort } };
+export function abortFetchLatestItems({ error }) {
+  return { type: FETCH_LATEST_ITEMS, payload: { error }, meta: { status: Status.ABORT } };
 }
 
 function* fetchLatestItemsTask() {
   try {
     const itemModels = yield call(fetchItemsWithQuery);
-    yield put(fetchLatestItemsCompleted({ itemModels }));
+    yield put(completeFetchLatestItems({ itemModels }));
   } catch (e) {
-    yield put(fetchLatestItemsAborted({ e }));
+    yield put(abortFetchLatestItems({ e }));
   }
 }
 
 export function* subscribeFetchLatestItems() {
   yield takeLatest((action) => {
-    const expected = fetchLatestItemsStart();
+    const expected = startFetchLatestItems();
     return action.type === expected.type && action.meta.status === expected.meta.status;
   }, fetchLatestItemsTask);
 }
