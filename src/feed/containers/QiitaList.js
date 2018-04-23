@@ -14,7 +14,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  separator: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'lightgray',
+    marginLeft: 8,
+  },
 });
+
+const separator = () => <View style={styles.separator} />;
 
 export default class QiitaList extends Component {
   static defaultProps = {
@@ -38,6 +46,7 @@ export default class QiitaList extends Component {
         data={this.props.items}
         renderItem={this.renderItem}
         keyExtractor={item => item.id}
+        ItemSeparatorComponent={separator}
       />
     </View>
   );
