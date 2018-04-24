@@ -5,14 +5,16 @@ import PropTypes from 'prop-types';
 import QiitaList from './QiitaList';
 import { startFetchLatestItems } from '../modules/latestItems';
 
+const PER_PAGE = 20;
+
 const mapStateToProps = state => ({
   latestItems: state.latestItems.itemModels,
-  latestItemsLoaded: state.latestItems.loaded,
+  latestItemsLoading: state.latestItems.loading,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchLastestItems: () => {
-    dispatch(startFetchLatestItems());
+  fetchLastestItems: (page, perPage) => {
+    dispatch(startFetchLatestItems(page, perPage));
   },
 });
 
@@ -20,12 +22,23 @@ class FeedComponent extends Component {
   static defaultProps = {
     fetchLastestItems: () => {},
     latestItems: [],
-    latestItemsLoaded: false,
+    latestItemsLoading: true,
     navigator: {},
   };
+
   componentDidMount() {
-    this.props.fetchLastestItems();
+    this.fetchLatestItems(1);
   }
+
+  onRefresh = () => {
+    this.fetchLatestItems(1);
+  };
+
+  onEndReached = (size) => {
+    console.log(size);
+    // const page = size / PER_PAGE + 1;
+    // this.fetchLatestItems(page);
+  };
 
   onSelectItem = (item) => {
     this.props.navigator.push({
@@ -39,17 +52,27 @@ class FeedComponent extends Component {
     });
   };
 
+  fetchLatestItems = (page) => {
+    this.props.fetchLastestItems(page, PER_PAGE);
+  };
+
   render() {
-    const { latestItems, latestItemsLoaded } = this.props;
+    const { latestItems, latestItemsLoading } = this.props;
     return (
-      <QiitaList items={latestItems} loaded={latestItemsLoaded} onSelectItem={this.onSelectItem} />
+      <QiitaList
+        items={latestItems}
+        loading={latestItemsLoading}
+        onSelectItem={this.onSelectItem}
+        onRefresh={this.onRefresh}
+        onEndReached={this.onEndReached}
+      />
     );
   }
 }
 FeedComponent.propTypes = {
   fetchLastestItems: PropTypes.func,
   latestItems: PropTypes.array,
-  latestItemsLoaded: PropTypes.bool,
+  latestItemsLoading: PropTypes.bool,
   navigator: PropTypes.object,
 };
 

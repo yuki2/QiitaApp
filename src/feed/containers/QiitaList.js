@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 
 import QiitaCell from './QiitaCell';
 import QiitaIndicator from './QiitaIndicator';
@@ -27,8 +28,10 @@ const separator = () => <View style={styles.separator} />;
 export default class QiitaList extends Component {
   static defaultProps = {
     items: [],
-    loaded: false,
+    loading: true,
     onSelectItem: () => {},
+    onRefresh: () => {},
+    onEndReached: () => {},
   };
 
   selectItem = () => {};
@@ -39,28 +42,40 @@ export default class QiitaList extends Component {
     <QiitaCell onSelect={() => this.props.onSelectItem(item)} item={item} />
   );
 
-  renderListView = () => (
-    <View style={styles.container}>
-      <FlatList
-        style={styles.listView}
-        data={this.props.items}
-        renderItem={this.renderItem}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={separator}
-      />
-    </View>
-  );
+  renderListView = () => {
+    const {
+      loading, items, onRefresh, onEndReached,
+    } = this.props;
+    return (
+      <View style={styles.container}>
+        <FlatList
+          style={styles.listView}
+          data={items}
+          renderItem={this.renderItem}
+          keyExtractor={item => item.id}
+          ItemSeparatorComponent={separator}
+          refreshing={loading}
+          onRefresh={onRefresh}
+          onEndReachedThreshold={0.5}
+          onEndReached={onEndReached(_.size(items))}
+        />
+      </View>
+    );
+  };
 
   render = () => {
-    if (!this.props.loaded) {
+    const { loading, items } = this.props;
+    if (loading && _.isEmpty(items)) {
       return this.renderLoadingView();
     }
-    return this.renderListView();
+    return this.renderListView(items);
   };
 }
 
 QiitaList.propTypes = {
   items: PropTypes.array,
-  loaded: PropTypes.bool,
+  loading: PropTypes.bool,
   onSelectItem: PropTypes.func,
+  onRefresh: PropTypes.func,
+  onEndReached: PropTypes.func,
 };
