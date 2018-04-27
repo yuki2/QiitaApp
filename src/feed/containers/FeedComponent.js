@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import QiitaList from './QiitaList';
 import { startFetchLatestItems } from '../modules/latestItems';
 
-const PER_PAGE = 20;
+const PER_PAGE = 50;
 
 const mapStateToProps = state => ({
   latestItems: state.latestItems.itemModels,
@@ -34,10 +34,9 @@ class FeedComponent extends Component {
     this.fetchLatestItems(1);
   };
 
-  onEndReached = (size) => {
-    console.log(size);
-    // const page = size / PER_PAGE + 1;
-    // this.fetchLatestItems(page);
+  onEndReached = (distanceFromEnd, size) => {
+    const page = size / PER_PAGE + 1;
+    this.fetchLatestItems(page);
   };
 
   onSelectItem = (item) => {

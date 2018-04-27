@@ -49,6 +49,7 @@ export default class QiitaList extends Component {
     return (
       <View style={styles.container}>
         <FlatList
+          initialNumToRender={10}
           style={styles.listView}
           data={items}
           renderItem={this.renderItem}
@@ -57,7 +58,7 @@ export default class QiitaList extends Component {
           refreshing={loading}
           onRefresh={onRefresh}
           onEndReachedThreshold={0.5}
-          onEndReached={onEndReached(_.size(items))}
+          onEndReached={info => onEndReached(info.distanceFromEnd, _.size(items))}
         />
       </View>
     );

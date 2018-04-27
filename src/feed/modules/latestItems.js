@@ -11,6 +11,8 @@ const initialState = {
   error: {},
 };
 
+const uniqueArray = arrArg => arrArg.filter((elem, pos, arr) => arr.indexOf(elem) === pos);
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case FETCH_LATEST_ITEMS:
@@ -23,7 +25,7 @@ export default function reducer(state = initialState, action = {}) {
         case Status.COMPLETE:
           return {
             ...state,
-            itemModels: action.payload.itemModels,
+            itemModels: uniqueArray(state.itemModels.concat(action.payload.itemModels)),
             loading: false,
             error: {},
           };
