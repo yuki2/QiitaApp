@@ -29,7 +29,7 @@ export default class App extends Component {
       tabs: [
         {
           label: 'Feed',
-          screen: 'qiitaapp.FeedComponent',
+          screen: 'qiitaapp.FeedContainer',
           title: 'Feed',
           navigatorStyle,
         },

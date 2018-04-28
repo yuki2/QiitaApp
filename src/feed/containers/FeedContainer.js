@@ -22,13 +22,12 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-class FeedComponent extends Component {
+class FeedContainer extends Component {
   static defaultProps = {
     fetchLastestItems: () => {},
     openInAppBrowserByUrl: () => {},
     latestItems: [],
     latestItemsLoading: true,
-    navigator: {},
   };
 
   componentDidMount() {
@@ -65,12 +64,11 @@ class FeedComponent extends Component {
     );
   }
 }
-FeedComponent.propTypes = {
+FeedContainer.propTypes = {
   fetchLastestItems: PropTypes.func,
   openInAppBrowserByUrl: PropTypes.func,
   latestItems: PropTypes.array,
   latestItemsLoading: PropTypes.bool,
-  navigator: PropTypes.object,
 };
 
-export default connect(() => mapStateToProps, mapDispatchToProps)(FeedComponent);
+export default connect(() => mapStateToProps, mapDispatchToProps)(FeedContainer);
