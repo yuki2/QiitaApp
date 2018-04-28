@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import QiitaList from './QiitaList';
 import { startFetchLatestItems } from '../modules/latestItems';
-import { openInAppBrowser } from '../modules/inAppWebView';
+import { openInAppBrowser } from '../../common/modules/inAppWebView';
 
 const PER_PAGE = 50;
 
