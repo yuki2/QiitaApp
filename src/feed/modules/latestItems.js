@@ -13,6 +13,15 @@ const initialState = {
 
 const uniqueArray = arrArg => arrArg.filter((elem, pos, arr) => arr.indexOf(elem) === pos);
 
+const parseItem = item => ({
+  id: item.id,
+  title: item.title,
+  url: item.url,
+  user: item.user,
+  tags: item.tags,
+  createdAt: item.created_at,
+});
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case FETCH_LATEST_ITEMS:
@@ -43,10 +52,10 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function startFetchLatestItems(page = 1, perPage = 20) {
+export function startFetchLatestItems(page = 1, perPage = 20, refresh = false) {
   return {
     type: FETCH_LATEST_ITEMS,
-    payload: { page, perPage },
+    payload: { page, perPage, refresh },
     meta: { status: Status.PROCESSING },
   };
 }
@@ -61,8 +70,8 @@ export function abortFetchLatestItems(error) {
 
 function* fetchLatestItemsTask(action) {
   try {
-    const itemModels = yield call(fetchItems, { ...action.payload });
-    yield put(completeFetchLatestItems(itemModels));
+    const res = yield call(fetchItems, { ...action.payload });
+    yield put(completeFetchLatestItems(res.map(r => parseItem(r))));
   } catch (e) {
     yield put(abortFetchLatestItems(e));
   }
