@@ -1,6 +1,6 @@
 import { put, call, takeLatest } from 'redux-saga/effects';
 
-import { fetchItems } from '../../common/services/QiitaApi';
+import QiitaApi from '../../common/services/QiitaApi';
 import { Status } from '../../common/constants';
 
 const FETCH_LATEST_ITEMS = 'FETCH_LATEST_ITEMS';
@@ -70,7 +70,7 @@ export function abortFetchLatestItems(error) {
 
 function* fetchLatestItemsTask(action) {
   try {
-    const res = yield call(fetchItems, { ...action.payload });
+    const res = yield call(QiitaApi.fetchItems, { ...action.payload });
     yield put(completeFetchLatestItems(res.map(r => parseItem(r))));
   } catch (e) {
     yield put(abortFetchLatestItems(e));

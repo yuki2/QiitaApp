@@ -20,17 +20,21 @@ const onFulfill = (response) => {
   return response.json();
 };
 
-export function fetchItemsWithTag(tag) {
-  const path = `/tags/${tag}/items`;
-  return fetch(createUrl(path)).then(onFulfill);
+class QiitaApi {
+  fetchItemsWithTag = (tag) => {
+    const path = `/tags/${tag}/items`;
+    return fetch(createUrl(path)).then(onFulfill);
+  };
+
+  fetchItems = ({ page = 1, perPage = 20 }) => {
+    const path = '/items';
+    return fetch(createUrl(path, { page, per_page: perPage })).then(onFulfill);
+  };
+
+  fetchItemsWithQuery = ({ query = '', page = 1, perPage = 20 }) => {
+    const path = '/items';
+    return fetch(createUrl(path, { query, page, per_page: perPage })).then(onFulfill);
+  };
 }
 
-export function fetchItems({ page = 1, perPage = 20 }) {
-  const path = '/items';
-  return fetch(createUrl(path, { page, per_page: perPage })).then(onFulfill);
-}
-
-export function fetchItemsWithQuery({ query = '', page = 1, perPage = 20 }) {
-  const path = '/items';
-  return fetch(createUrl(path, { query, page, per_page: perPage })).then(onFulfill);
-}
+export default new QiitaApi();
