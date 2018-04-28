@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import QiitaList from './QiitaList';
 import { startFetchLatestItems } from '../modules/latestItems';
+import { openInAppBrowser } from '../modules/inAppWebView';
 
 const PER_PAGE = 50;
 
@@ -16,11 +17,15 @@ const mapDispatchToProps = dispatch => ({
   fetchLastestItems: (page, perPage) => {
     dispatch(startFetchLatestItems(page, perPage));
   },
+  openInAppBrowserByUrl: (url) => {
+    dispatch(openInAppBrowser(url));
+  },
 });
 
 class FeedComponent extends Component {
   static defaultProps = {
     fetchLastestItems: () => {},
+    openInAppBrowserByUrl: () => {},
     latestItems: [],
     latestItemsLoading: true,
     navigator: {},
@@ -40,15 +45,7 @@ class FeedComponent extends Component {
   };
 
   onSelectItem = (item) => {
-    this.props.navigator.push({
-      screen: 'qiitaapp.Item',
-      title: item.title,
-      passProps: { item },
-      navigatorStyle: {
-        navBarTranslucent: true,
-        tabBarHidden: true,
-      },
-    });
+    this.props.openInAppBrowserByUrl(item.url);
   };
 
   fetchLatestItems = (page) => {
@@ -70,6 +67,7 @@ class FeedComponent extends Component {
 }
 FeedComponent.propTypes = {
   fetchLastestItems: PropTypes.func,
+  openInAppBrowserByUrl: PropTypes.func,
   latestItems: PropTypes.array,
   latestItemsLoading: PropTypes.bool,
   navigator: PropTypes.object,
