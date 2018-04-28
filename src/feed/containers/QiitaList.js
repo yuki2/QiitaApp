@@ -49,6 +49,7 @@ export default class QiitaList extends Component {
     return (
       <View style={styles.container}>
         <FlatList
+          shouldItemUpdate={(props, nextProps) => props.item !== nextProps.item}
           initialNumToRender={10}
           style={styles.listView}
           data={items}
