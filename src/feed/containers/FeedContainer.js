@@ -14,8 +14,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchLastestItems: (page, perPage) => {
-    dispatch(startFetchLatestItems(page, perPage));
+  fetchLastestItems: (page, perPage, refresh) => {
+    dispatch(startFetchLatestItems(page, perPage, refresh));
   },
   openInAppBrowserByUrl: (url) => {
     dispatch(openInAppBrowser(url));
@@ -31,24 +31,24 @@ class FeedContainer extends Component {
   };
 
   componentDidMount() {
-    this.fetchLatestItems(1);
+    this.fetchLatestItems(1, true);
   }
 
   onRefresh = () => {
-    this.fetchLatestItems(1);
+    this.fetchLatestItems(1, true);
   };
 
   onEndReached = (distanceFromEnd, size) => {
     const page = size / PER_PAGE + 1;
-    this.fetchLatestItems(page);
+    this.fetchLatestItems(page, false);
   };
 
   onSelectItem = (item) => {
     this.props.openInAppBrowserByUrl(item.url);
   };
 
-  fetchLatestItems = (page) => {
-    this.props.fetchLastestItems(page, PER_PAGE);
+  fetchLatestItems = (page, refresh) => {
+    this.props.fetchLastestItems(page, PER_PAGE, refresh);
   };
 
   render() {

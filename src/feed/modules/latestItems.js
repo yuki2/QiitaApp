@@ -31,13 +31,20 @@ export default function reducer(state = initialState, action = {}) {
             ...state,
             loading: true,
           };
-        case Status.COMPLETE:
+        case Status.COMPLETE: {
+          let itemModels;
+          if (action.meta.refresh) {
+            itemModels = uniqueArray(action.payload.itemModels);
+          } else {
+            itemModels = uniqueArray(state.itemModels.concat(action.payload.itemModels));
+          }
           return {
             ...state,
-            itemModels: uniqueArray(state.itemModels.concat(action.payload.itemModels)),
+            itemModels,
             loading: false,
             error: {},
           };
+        }
         case Status.ABORT:
           return {
             ...state,
@@ -60,8 +67,12 @@ export function startFetchLatestItems(page = 1, perPage = 20, refresh = false) {
   };
 }
 
-export function completeFetchLatestItems(itemModels) {
-  return { type: FETCH_LATEST_ITEMS, payload: { itemModels }, meta: { status: Status.COMPLETE } };
+export function completeFetchLatestItems(itemModels, refresh) {
+  return {
+    type: FETCH_LATEST_ITEMS,
+    payload: { itemModels },
+    meta: { status: Status.COMPLETE, refresh },
+  };
 }
 
 export function abortFetchLatestItems(error) {
@@ -70,8 +81,9 @@ export function abortFetchLatestItems(error) {
 
 function* fetchLatestItemsTask(action) {
   try {
-    const res = yield call(QiitaApi.fetchItems, { ...action.payload });
-    yield put(completeFetchLatestItems(res.map(r => parseItem(r))));
+    const { page, perPage, refresh } = action.payload;
+    const res = yield call(QiitaApi.fetchItems, { page, perPage });
+    yield put(completeFetchLatestItems(res.map(r => parseItem(r)), refresh));
   } catch (e) {
     yield put(abortFetchLatestItems(e));
   }
