@@ -16,14 +16,14 @@ RCT_EXPORT_MODULE()
   return dispatch_get_main_queue();
 }
 
-RCT_EXPORT_METHOD(show:(NSDictionary *)args resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(start:(NSDictionary *)args resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   NSString *url = args[@"url"];
   NSString *clientId = args[@"clientId"];
   NSArray *scopes = args[@"scopes"];
-  NSString *state = args[@"state"];
   NSString *schema = args[@"schema"];
   
+  NSString *state = [[NSUUID UUID] UUIDString];
   NSString *scope = [scopes componentsJoinedByString:@" "];
   NSArray *queryItems = @[
                           [NSURLQueryItem queryItemWithName:@"client_id" value:clientId],
@@ -37,12 +37,38 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args resolver:(RCTPromiseResolveBlock)res
       reject([NSString stringWithFormat:@"%ld", error.code], error.description, error);
       return;
     }
-    resolve(callbackURL.absoluteString);
+    
+    NSURLComponents *callbackURLComponents = [[NSURLComponents alloc] initWithURL:callbackURL resolvingAgainstBaseURL:YES];
+    if(![self checkState:callbackURLComponents state:state]) {
+      reject(@"401", @"Unauthorized state", nil);
+      return;
+    }
+    resolve(@{@"code": [self extractCode:callbackURLComponents]});
   }];
   
   if(!self.session.start){
     reject(@"400", @"Cannot start session", nil);
   }
+}
+
+- (BOOL)checkState:(NSURLComponents *)components state:(NSString *)state
+{
+  for (NSURLQueryItem *queryItem in components.queryItems) {
+    if ([queryItem.name isEqualToString:@"state"] && [queryItem.value isEqualToString:state]) {
+      return YES;
+    }
+  }
+  return NO;
+}
+
+- (NSString *)extractCode:(NSURLComponents *)components
+{
+  for (NSURLQueryItem *queryItem in components.queryItems) {
+    if ([queryItem.name isEqualToString:@"code"]) {
+      return queryItem.value;
+    }
+  }
+  return @"";
 }
 
 @end

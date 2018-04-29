@@ -1,6 +1,6 @@
 import _ from 'underscore';
 
-const BASE_URL = 'https://qiita.com/api/v2';
+const BASE_URL = 'https://qiita.com';
 
 const createUrl = (path, params = {}) => {
   if (_.isEmpty(params)) {
@@ -14,26 +14,60 @@ const createUrl = (path, params = {}) => {
 };
 
 const onFulfill = (response) => {
-  if (response.status < 200 || response.status >= 300) {
-    throw new Error(JSON.stringify({ status: response.status }));
+  if (!response.ok) {
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject({ status: response.status });
   }
   return response.json();
 };
 
 class QiitaApi {
+  constructor() {
+    this._token = '';
+  }
+
+  set token(val) {
+    this._token = val;
+  }
+
+  authedFetch = (url) => {
+    if (_.isEmpty(this._token)) {
+      return fetch(url);
+    }
+    return fetch(url, {
+      headers: { Authorization: `Bearer ${this._token}` },
+    });
+  };
+
+  fetchAccessToken = ({ clientId, clientSecret, code }) => {
+    const method = 'POST';
+    const body = JSON.stringify({ client_id: clientId, client_secret: clientSecret, code });
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    };
+    const path = '/api/v2/access_tokens';
+    return fetch(createUrl(path), { method, headers, body }).then(onFulfill);
+  };
+
   fetchItemsWithTag = (tag) => {
-    const path = `/tags/${tag}/items`;
-    return fetch(createUrl(path)).then(onFulfill);
+    const path = `/api/v2/tags/${tag}/items`;
+    return this.authedFetch(createUrl(path)).then(onFulfill);
   };
 
   fetchItems = ({ page = 1, perPage = 20 }) => {
-    const path = '/items';
-    return fetch(createUrl(path, { page, per_page: perPage })).then(onFulfill);
+    const path = '/api/v2/items';
+    return this.authedFetch(createUrl(path, { page, per_page: perPage })).then(onFulfill);
   };
 
   fetchItemsWithQuery = ({ query = '', page = 1, perPage = 20 }) => {
-    const path = '/items';
-    return fetch(createUrl(path, { query, page, per_page: perPage })).then(onFulfill);
+    const path = '/api/v2/items';
+    return this.authedFetch(createUrl(path, { query, page, per_page: perPage })).then(onFulfill);
+  };
+
+  fetchAuthenticatedUser = () => {
+    const path = '/api/v2/authenticated_user';
+    return this.authedFetch(createUrl(path)).then(onFulfill);
   };
 }
 
