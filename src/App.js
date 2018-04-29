@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { Navigation } from 'react-native-navigation';
 import { Provider } from 'react-redux';
+import './ReactotronConfig';
 
 import registerScreens from './registerScreens';
 import configureStore from './configureStore';
