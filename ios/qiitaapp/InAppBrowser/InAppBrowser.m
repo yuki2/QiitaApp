@@ -2,6 +2,8 @@
 
 #import <React/RCTUtils.h>
 
+@import SafariServices;
+
 @implementation InAppBrowser
 
 RCT_EXPORT_MODULE()
@@ -14,7 +16,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(show:(NSString *)url resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   if (url == nil || url.length == 0) {
-    reject(@"Error", @"You must specify a url.", nil);
+    reject(@"400", @"You must specify a url.", nil);
     return;
   }
   
