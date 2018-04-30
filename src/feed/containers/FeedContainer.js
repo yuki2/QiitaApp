@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
+import { TabViewAnimated, TabBar } from 'react-native-tab-view';
 
 import QiitaList from './QiitaList';
 import { startFetchLatestItems } from '../modules/latestItems';
@@ -48,42 +48,33 @@ class FeedContainer extends Component {
     latestItems: PropTypes.array,
     latestItemsLoading: PropTypes.bool,
   };
-  state = {
-    index: 0,
-    routes: [{ key: 'latest', title: 'Latest' }, { key: 'tagFeed', title: 'Tag Feed' }],
-  };
-
-  componentDidMount() {
-    this.fetchItems(1, true);
+  constructor(props) {
+    super(props);
+    this.state = {
+      index: 0,
+      routes: [
+        {
+          key: 'latest',
+          title: 'Latest',
+        },
+        { key: 'tagFeed', title: 'Tag Feed' },
+      ],
+    };
+    this.functionMap = this._createFunctionMap();
   }
 
-  _onRefresh = () => {
-    this.fetchItems(1, true);
+  componentDidMount = () => {
+    this._fetchItems(1, true);
   };
 
-  _onEndReached = (distanceFromEnd, size) => {
-    const page = size / PER_PAGE + 1;
-    this.fetchItems(page, false);
-  };
-
-  _onSelectItem = (item) => {
-    this.props.openInAppBrowserByUrl(item.url);
-  };
-
-  fetchItems = (page, refresh) => {
-    const { fetchLastestItems } = this.props;
-    console.log(JSON.stringify(this.props));
-    fetchLastestItems(page, PER_PAGE, refresh);
-  };
-
-  _handleIndexChange = index => this.setState({ index });
-
-  _renderHeader = props => <TabBar style={tabStyles.tabBar} {...props} />;
-
-  _renderScene = ({ route }) => {
-    switch (route.key) {
-      case 'latest': {
-        const { latestItems, latestItemsLoading } = this.props;
+  _createFunctionMap = () => [
+    {
+      fetchItems: (page, refresh, props) => {
+        const { fetchLastestItems } = props;
+        fetchLastestItems(page, PER_PAGE, refresh);
+      },
+      render: (props) => {
+        const { latestItems, latestItemsLoading } = props;
         return (
           <QiitaList
             items={latestItems}
@@ -93,13 +84,37 @@ class FeedContainer extends Component {
             onEndReached={this._onEndReached}
           />
         );
-      }
-      case 'tagFeed':
-        return <View style={[{ flex: 1 }, { backgroundColor: '#673ab7' }]} />;
-      default:
-        return null;
-    }
+      },
+    },
+    {
+      fetchItems: () => {},
+      render: () => <View style={[{ flex: 1 }, { backgroundColor: '#673ab7' }]} />,
+    },
+  ];
+
+  _onRefresh = () => {
+    this._fetchItems(1, true);
   };
+
+  _onEndReached = (distanceFromEnd, size) => {
+    const page = size / PER_PAGE + 1;
+    this._fetchItems(page, false);
+  };
+
+  _fetchItems = (page, refresh) => {
+    const { index } = this.state;
+    this.functionMap[index].fetchItems(page, refresh, this.props);
+  };
+
+  _onSelectItem = (item) => {
+    this.props.openInAppBrowserByUrl(item.url);
+  };
+
+  _handleIndexChange = index => this.setState({ index });
+
+  _renderHeader = props => <TabBar style={tabStyles.tabBar} {...props} />;
+
+  _renderScene = ({ index }) => this.functionMap[index].render(this.props);
 
   render() {
     return (
