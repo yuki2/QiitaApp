@@ -22,9 +22,11 @@ RCT_EXPORT_METHOD(show:(NSString *)url resolver:(RCTPromiseResolveBlock)resolve 
   
   UIViewController *ctrl = RCTPresentedViewController();
   SFSafariViewController *safariCtrl = [[SFSafariViewController alloc]initWithURL: [NSURL URLWithString:url]];
-  [ctrl presentViewController:safariCtrl animated:YES completion:nil];
+  [ctrl presentViewController:safariCtrl animated:YES completion:^{
+    resolve(@YES);
+  }];
   
-  resolve(@YES);
+  
 }
 
 @end
