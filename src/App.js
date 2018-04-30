@@ -8,6 +8,9 @@ import configureStore from './configureStore';
 
 import { LoginStatus, startLoginQiita } from './login/modules/session';
 
+import rssIcon from './assets/rss.png';
+import searchIcon from './assets/search.png';
+
 const store = configureStore();
 registerScreens(store, Provider);
 
@@ -57,17 +60,18 @@ export default class App extends Component {
           label: 'Feed',
           screen: 'qiitaapp.FeedContainer',
           title: 'Feed',
+          icon: rssIcon,
           navigatorStyle,
         },
         {
           label: 'Search',
           screen: 'qiitaapp.SearchComponent',
           title: 'Search',
+          icon: searchIcon,
           navigatorStyle,
         },
       ],
       tabsStyle: {
-        tabBarButtonColor: '#59BB0C',
         tabBarSelectedButtonColor: '#59BB0C',
         tabBarBackgroundColor: 'white',
       },
