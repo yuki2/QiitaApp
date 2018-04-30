@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 
 import QiitaCell from './QiitaCell';
-import QiitaIndicator from './QiitaIndicator';
+import withIndicator from './withIndicator';
 
 const styles = StyleSheet.create({
   container: {
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 
 const separator = () => <View style={styles.separator} />;
 
-export default class QiitaList extends Component {
+class QiitaList extends Component {
   static defaultProps = {
     items: [],
     loading: true,
@@ -33,10 +33,13 @@ export default class QiitaList extends Component {
     onRefresh: () => {},
     onEndReached: () => {},
   };
-
-  selectItem = () => {};
-
-  renderLoadingView = () => <QiitaIndicator />;
+  static propTypes = {
+    items: PropTypes.array,
+    loading: PropTypes.bool,
+    onSelectItem: PropTypes.func,
+    onRefresh: PropTypes.func,
+    onEndReached: PropTypes.func,
+  };
 
   renderItem = ({ item }) => (
     <QiitaCell onSelect={() => this.props.onSelectItem(item)} item={item} />
@@ -66,18 +69,9 @@ export default class QiitaList extends Component {
   };
 
   render = () => {
-    const { loading, items } = this.props;
-    if (loading && _.isEmpty(items)) {
-      return this.renderLoadingView();
-    }
+    const { items } = this.props;
     return this.renderListView(items);
   };
 }
 
-QiitaList.propTypes = {
-  items: PropTypes.array,
-  loading: PropTypes.bool,
-  onSelectItem: PropTypes.func,
-  onRefresh: PropTypes.func,
-  onEndReached: PropTypes.func,
-};
+export default withIndicator(QiitaList);
