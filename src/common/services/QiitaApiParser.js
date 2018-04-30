@@ -13,4 +13,13 @@ export const parseItems = (response) => {
   };
 };
 
-export const parseTag = tag => ({});
+export const parseTags = (response) => {
+  const { totalCount, items } = response;
+  return {
+    totalCount,
+    tags: items.map(item => ({
+      id: item.id,
+      iconUrl: item.icon_url,
+    })),
+  };
+};

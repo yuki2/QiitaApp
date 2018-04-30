@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
 
 import QiitaList from './QiitaList';
 import { startFetchLatestFeed } from '../modules/latestFeed';
+import { startFetchTagFeed } from '../modules/tagFeed';
 import { openInAppBrowser } from '../../common/modules/inAppWebView';
 
 const PER_PAGE = 50;
@@ -23,11 +24,16 @@ const tabStyles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   latestFeed: state.latestFeed,
+  tagFeed: state.tagFeed,
+  myUser: state.session.myUser,
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchLastestFeed: (page, perPage, refresh) => {
     dispatch(startFetchLatestFeed(page, perPage, refresh));
+  },
+  fetchTagFeed: (userId, page, perPage, refresh) => {
+    dispatch(startFetchTagFeed(userId, page, perPage, refresh));
   },
   openInAppBrowserByUrl: (url) => {
     dispatch(openInAppBrowser(url));
@@ -38,12 +44,16 @@ class FeedContainer extends Component {
   static defaultProps = {
     fetchLastestFeed: () => {},
     openInAppBrowserByUrl: () => {},
-    latestFeed: [],
+    latestFeed: { loading: true, model: { items: [] } },
+    tagFeed: { loading: true, model: { items: [] } },
+    myUser: {},
   };
   static propTypes = {
     fetchLastestFeed: PropTypes.func,
     openInAppBrowserByUrl: PropTypes.func,
     latestFeed: PropTypes.object,
+    tagFeed: PropTypes.object,
+    myUser: PropTypes.object,
   };
   constructor(props) {
     super(props);
@@ -61,7 +71,7 @@ class FeedContainer extends Component {
   }
 
   componentDidMount = () => {
-    this._fetchItems(1, true);
+    this.functionMap.forEach(f => f.fetchItems(1, true, this.props));
   };
 
   _createFunctionMap = () => [
@@ -85,8 +95,23 @@ class FeedContainer extends Component {
       },
     },
     {
-      fetchItems: () => {},
-      render: () => <View style={[{ flex: 1 }, { backgroundColor: '#673ab7' }]} />,
+      fetchItems: (page, refresh, props) => {
+        const { fetchTagFeed, myUser } = props;
+        fetchTagFeed(myUser.id, page, PER_PAGE, refresh);
+      },
+      render: (props) => {
+        const { tagFeed } = props;
+        const { model, loading } = tagFeed;
+        return (
+          <QiitaList
+            items={model.items}
+            loading={loading}
+            onSelectItem={this._onSelectItem}
+            onRefresh={this._onRefresh}
+            onEndReached={this._onEndReached}
+          />
+        );
+      },
     },
   ];
 

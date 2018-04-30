@@ -70,9 +70,11 @@ class QiitaApi {
     return this.authedFetch(createUrl(path, { page, per_page: perPage })).then(onFulfillPaging);
   };
 
-  fetchItemsWithQuery = ({ query = '', page = 1, perPage = 20 }) => {
+  fetchItemsByTags = ({ tags, page = 1, perPage = 20 }) => {
+    const query = tags.join(' OR ');
     const path = '/api/v2/items';
-    return this.authedFetch(createUrl(path, { query, page, per_page: perPage })).then(onFulfillPaging);
+    const url = createUrl(path, { query, page, per_page: perPage });
+    return this.authedFetch(url).then(onFulfillPaging);
   };
 
   fetchAuthenticatedUser = () => {
@@ -80,9 +82,10 @@ class QiitaApi {
     return this.authedFetch(createUrl(path)).then(onFulfill);
   };
 
-  fetchFollowingTags = (userId) => {
-    const path = `api/v2/users/${userId}/following_tags`;
-    return this.authedFetch(createUrl(path)).then(onFulfillPaging);
+  fetchFollowingTags = ({ userId, page = 1, perPage = 20 }) => {
+    const path = `/api/v2/users/${userId}/following_tags`;
+    const url = createUrl(path, { page, per_page: perPage });
+    return this.authedFetch(url).then(onFulfillPaging);
   };
 }
 

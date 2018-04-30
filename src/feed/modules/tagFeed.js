@@ -1,10 +1,10 @@
 import { put, call, takeLatest } from 'redux-saga/effects';
 
 import QiitaApi from '../../common/services/QiitaApi';
-import { parseItems } from '../../common/services/QiitaApiParser';
+import { parseItems, parseTags } from '../../common/services/QiitaApiParser';
 import { Status } from '../../common/constants';
 
-const FETCH_LATEST_FEED = 'FETCH_LATEST_FEED';
+const FETCH_TAG_FEED = 'FETCH_TAG_FEED';
 
 const initialState = {
   loading: true,
@@ -19,7 +19,7 @@ const uniqueArray = arrArg => arrArg.filter((elem, pos, arr) => arr.indexOf(elem
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case FETCH_LATEST_FEED:
+    case FETCH_TAG_FEED:
       switch (action.meta.status) {
         case Status.PROCESSING:
           return {
@@ -59,40 +59,53 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function startFetchLatestFeed(page = 1, perPage = 20, refresh = false) {
+export function startFetchTagFeed(userId, page = 1, perPage = 20, refresh = false) {
   return {
-    type: FETCH_LATEST_FEED,
-    payload: { page, perPage, refresh },
+    type: FETCH_TAG_FEED,
+    payload: {
+      userId,
+      page,
+      perPage,
+      refresh,
+    },
     meta: { status: Status.PROCESSING },
   };
 }
 
-export function completeFetchLatestFeed(model, refresh) {
+export function completeFetchTagFeed(model, refresh) {
   return {
-    type: FETCH_LATEST_FEED,
+    type: FETCH_TAG_FEED,
     payload: { model },
     meta: { status: Status.COMPLETE, refresh },
   };
 }
 
-export function abortFetchLatestFeed(error) {
-  return { type: FETCH_LATEST_FEED, payload: { error }, meta: { status: Status.ABORT } };
+export function abortFetchTagFeed(error) {
+  return { type: FETCH_TAG_FEED, payload: { error }, meta: { status: Status.ABORT } };
 }
 
-function* fetchLatestFeedTask(action) {
+function* fetchTagFeedTask(action) {
   try {
-    const { page, perPage, refresh } = action.payload;
-    const res = yield call(QiitaApi.fetchItems, { page, perPage });
-    const model = parseItems(res);
-    yield put(completeFetchLatestFeed(model, refresh));
+    const {
+      userId, page, perPage, refresh,
+    } = action.payload;
+    const followingTagsRes = yield call(QiitaApi.fetchFollowingTags, { userId, page, perPage });
+    const tagsModel = parseTags(followingTagsRes);
+    const itemsRes = yield call(QiitaApi.fetchItemsByTags, {
+      tags: tagsModel.tags.map(tag => tag.id),
+      page,
+      perPage,
+    });
+    const model = parseItems(itemsRes);
+    yield put(completeFetchTagFeed(model, refresh));
   } catch (e) {
-    yield put(abortFetchLatestFeed(e));
+    yield put(abortFetchTagFeed(e));
   }
 }
 
-export function* subscribeFetchLatestFeed() {
+export function* subscribeFetchLatestItems() {
   yield takeLatest((action) => {
-    const expected = startFetchLatestFeed();
+    const expected = startFetchTagFeed();
     return action.type === expected.type && action.meta.status === expected.meta.status;
-  }, fetchLatestFeedTask);
+  }, fetchTagFeedTask);
 }
