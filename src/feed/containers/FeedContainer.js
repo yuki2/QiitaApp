@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
 
 import QiitaList from './QiitaList';
 import { startFetchLatestItems } from '../modules/latestItems';
 import { openInAppBrowser } from '../../common/modules/inAppWebView';
 
 const PER_PAGE = 50;
+
+const initialLayout = {
+  height: 0,
+  width: Dimensions.get('window').width,
+};
+
+const tabStyles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: '#59BB0C',
+  },
+});
 
 const mapStateToProps = state => ({
   latestItems: state.latestItems.itemModels,
@@ -35,37 +48,67 @@ class FeedContainer extends Component {
     latestItems: PropTypes.array,
     latestItemsLoading: PropTypes.bool,
   };
+  state = {
+    index: 0,
+    routes: [{ key: 'latest', title: 'Latest' }, { key: 'tagFeed', title: 'Tag Feed' }],
+  };
 
   componentDidMount() {
-    this.fetchLatestItems(1, true);
+    this.fetchItems(1, true);
   }
 
-  onRefresh = () => {
-    this.fetchLatestItems(1, true);
+  _onRefresh = () => {
+    this.fetchItems(1, true);
   };
 
-  onEndReached = (distanceFromEnd, size) => {
+  _onEndReached = (distanceFromEnd, size) => {
     const page = size / PER_PAGE + 1;
-    this.fetchLatestItems(page, false);
+    this.fetchItems(page, false);
   };
 
-  onSelectItem = (item) => {
+  _onSelectItem = (item) => {
     this.props.openInAppBrowserByUrl(item.url);
   };
 
-  fetchLatestItems = (page, refresh) => {
-    this.props.fetchLastestItems(page, PER_PAGE, refresh);
+  fetchItems = (page, refresh) => {
+    const { fetchLastestItems } = this.props;
+    console.log(JSON.stringify(this.props));
+    fetchLastestItems(page, PER_PAGE, refresh);
+  };
+
+  _handleIndexChange = index => this.setState({ index });
+
+  _renderHeader = props => <TabBar style={tabStyles.tabBar} {...props} />;
+
+  _renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'latest': {
+        const { latestItems, latestItemsLoading } = this.props;
+        return (
+          <QiitaList
+            items={latestItems}
+            loading={latestItemsLoading}
+            onSelectItem={this._onSelectItem}
+            onRefresh={this._onRefresh}
+            onEndReached={this._onEndReached}
+          />
+        );
+      }
+      case 'tagFeed':
+        return <View style={[{ flex: 1 }, { backgroundColor: '#673ab7' }]} />;
+      default:
+        return null;
+    }
   };
 
   render() {
-    const { latestItems, latestItemsLoading } = this.props;
     return (
-      <QiitaList
-        items={latestItems}
-        loading={latestItemsLoading}
-        onSelectItem={this.onSelectItem}
-        onRefresh={this.onRefresh}
-        onEndReached={this.onEndReached}
+      <TabViewAnimated
+        navigationState={this.state}
+        renderScene={this._renderScene}
+        renderHeader={this._renderHeader}
+        onIndexChange={this._handleIndexChange}
+        initialLayout={initialLayout}
       />
     );
   }

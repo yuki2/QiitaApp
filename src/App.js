@@ -15,13 +15,12 @@ const store = configureStore();
 registerScreens(store, Provider);
 
 const navigatorStyle = {
-  navBarTranslucent: true,
-  drawUnderNavBar: false,
+  navBarTranslucent: false,
+  navBarNoBorder: true,
   navBarTextColor: 'white',
   navBarButtonColor: 'white',
   navBarBackgroundColor: '#59BB0C',
   statusBarTextColorScheme: 'light',
-  drawUnderTabBar: false,
 };
 
 export default class App extends Component {
