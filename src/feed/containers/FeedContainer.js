@@ -29,6 +29,12 @@ class FeedContainer extends Component {
     latestItems: [],
     latestItemsLoading: true,
   };
+  static propTypes = {
+    fetchLastestItems: PropTypes.func,
+    openInAppBrowserByUrl: PropTypes.func,
+    latestItems: PropTypes.array,
+    latestItemsLoading: PropTypes.bool,
+  };
 
   componentDidMount() {
     this.fetchLatestItems(1, true);
@@ -64,11 +70,5 @@ class FeedContainer extends Component {
     );
   }
 }
-FeedContainer.propTypes = {
-  fetchLastestItems: PropTypes.func,
-  openInAppBrowserByUrl: PropTypes.func,
-  latestItems: PropTypes.array,
-  latestItemsLoading: PropTypes.bool,
-};
 
 export default connect(() => mapStateToProps, mapDispatchToProps)(FeedContainer);

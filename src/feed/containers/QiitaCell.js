@@ -48,6 +48,10 @@ export default class QiitaCell extends Component {
     onSelect: () => {},
     item: {},
   };
+  static propTypes = {
+    onSelect: PropTypes.func,
+    item: PropTypes.object,
+  };
   constructor(props) {
     super(props);
     this.onSelect = this.props.onSelect;
@@ -73,8 +77,3 @@ export default class QiitaCell extends Component {
     );
   }
 }
-
-QiitaCell.propTypes = {
-  onSelect: PropTypes.func,
-  item: PropTypes.object,
-};

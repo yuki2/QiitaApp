@@ -8,6 +8,9 @@ export default class QiitaItemView extends Component {
   static defaultProps = {
     item: {},
   };
+  static propTypes = {
+    item: PropTypes.object,
+  };
 
   renderLoadingView = () => <QiitaIndicator />;
 
@@ -15,7 +18,3 @@ export default class QiitaItemView extends Component {
     return <WebView source={{ html: this.props.item.rendered_body }} scalesPageToFit />;
   }
 }
-
-QiitaItemView.propTypes = {
-  item: PropTypes.object,
-};
