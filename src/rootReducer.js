@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 
-import latestItems from './feed/modules/latestItems';
+import latestFeed from './feed/modules/latestFeed';
 import session from './login/modules/session';
 
 const rootReducer = combineReducers({
-  latestItems,
+  latestFeed,
   session,
 });
 

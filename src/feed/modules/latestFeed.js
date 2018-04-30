@@ -1,30 +1,25 @@
 import { put, call, takeLatest } from 'redux-saga/effects';
 
 import QiitaApi from '../../common/services/QiitaApi';
+import { parseItems } from '../../common/services/QiitaApiParser';
 import { Status } from '../../common/constants';
 
-const FETCH_LATEST_ITEMS = 'FETCH_LATEST_ITEMS';
+const FETCH_LATEST_FEED = 'FETCH_LATEST_FEED';
 
 const initialState = {
   loading: true,
-  itemModels: [],
+  model: {
+    totalCount: 0,
+    items: [],
+  },
   error: {},
 };
 
 const uniqueArray = arrArg => arrArg.filter((elem, pos, arr) => arr.indexOf(elem) === pos);
 
-const parseItem = item => ({
-  id: item.id,
-  title: item.title,
-  url: item.url,
-  user: item.user,
-  tags: item.tags,
-  createdAt: item.created_at,
-});
-
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case FETCH_LATEST_ITEMS:
+    case FETCH_LATEST_FEED:
       switch (action.meta.status) {
         case Status.PROCESSING:
           return {
@@ -32,15 +27,20 @@ export default function reducer(state = initialState, action = {}) {
             loading: true,
           };
         case Status.COMPLETE: {
-          let itemModels;
+          const { items, totalCount } = action.payload.model;
+          let newItems;
           if (action.meta.refresh) {
-            itemModels = uniqueArray(action.payload.itemModels);
+            newItems = uniqueArray(items);
           } else {
-            itemModels = uniqueArray(state.itemModels.concat(action.payload.itemModels));
+            newItems = uniqueArray(state.model.items.concat(items));
           }
+
           return {
             ...state,
-            itemModels,
+            model: {
+              totalCount,
+              items: newItems,
+            },
             loading: false,
             error: {},
           };
@@ -59,39 +59,43 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function startFetchLatestItems(page = 1, perPage = 20, refresh = false) {
+export function startFetchLatestFeed(page = 1, perPage = 20, refresh = false) {
   return {
-    type: FETCH_LATEST_ITEMS,
+    type: FETCH_LATEST_FEED,
     payload: { page, perPage, refresh },
     meta: { status: Status.PROCESSING },
   };
 }
 
-export function completeFetchLatestItems(itemModels, refresh) {
+export function completeFetchLatestFeed(model, refresh) {
   return {
-    type: FETCH_LATEST_ITEMS,
-    payload: { itemModels },
+    type: FETCH_LATEST_FEED,
+    payload: { model },
     meta: { status: Status.COMPLETE, refresh },
   };
 }
 
-export function abortFetchLatestItems(error) {
-  return { type: FETCH_LATEST_ITEMS, payload: { error }, meta: { status: Status.ABORT } };
+export function abortFetchLatestFeed(error) {
+  return { type: FETCH_LATEST_FEED, payload: { error }, meta: { status: Status.ABORT } };
 }
 
-function* fetchLatestItemsTask(action) {
+function* fetchLatestFeedTask(action) {
   try {
     const { page, perPage, refresh } = action.payload;
     const res = yield call(QiitaApi.fetchItems, { page, perPage });
-    yield put(completeFetchLatestItems(res.map(r => parseItem(r)), refresh));
+    console.log(res);
+    const model = parseItems(res);
+    console.log(model);
+    yield put(completeFetchLatestFeed(model, refresh));
   } catch (e) {
-    yield put(abortFetchLatestItems(e));
+    console.log(e);
+    yield put(abortFetchLatestFeed(e));
   }
 }
 
-export function* subscribeFetchLatestItems() {
+export function* subscribeFetchLatestFeed() {
   yield takeLatest((action) => {
-    const expected = startFetchLatestItems();
+    const expected = startFetchLatestFeed();
     return action.type === expected.type && action.meta.status === expected.meta.status;
-  }, fetchLatestItemsTask);
+  }, fetchLatestFeedTask);
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import QiitaCell from './QiitaCell';
 import withIndicator from './withIndicator';

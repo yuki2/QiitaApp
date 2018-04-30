@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
 
 import QiitaList from './QiitaList';
-import { startFetchLatestItems } from '../modules/latestItems';
+import { startFetchLatestFeed } from '../modules/latestFeed';
 import { openInAppBrowser } from '../../common/modules/inAppWebView';
 
 const PER_PAGE = 50;
@@ -22,13 +22,12 @@ const tabStyles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  latestItems: state.latestItems.itemModels,
-  latestItemsLoading: state.latestItems.loading,
+  latestFeed: state.latestFeed,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchLastestItems: (page, perPage, refresh) => {
-    dispatch(startFetchLatestItems(page, perPage, refresh));
+  fetchLastestFeed: (page, perPage, refresh) => {
+    dispatch(startFetchLatestFeed(page, perPage, refresh));
   },
   openInAppBrowserByUrl: (url) => {
     dispatch(openInAppBrowser(url));
@@ -37,16 +36,14 @@ const mapDispatchToProps = dispatch => ({
 
 class FeedContainer extends Component {
   static defaultProps = {
-    fetchLastestItems: () => {},
+    fetchLastestFeed: () => {},
     openInAppBrowserByUrl: () => {},
-    latestItems: [],
-    latestItemsLoading: true,
+    latestFeed: [],
   };
   static propTypes = {
-    fetchLastestItems: PropTypes.func,
+    fetchLastestFeed: PropTypes.func,
     openInAppBrowserByUrl: PropTypes.func,
-    latestItems: PropTypes.array,
-    latestItemsLoading: PropTypes.bool,
+    latestFeed: PropTypes.object,
   };
   constructor(props) {
     super(props);
@@ -70,15 +67,16 @@ class FeedContainer extends Component {
   _createFunctionMap = () => [
     {
       fetchItems: (page, refresh, props) => {
-        const { fetchLastestItems } = props;
-        fetchLastestItems(page, PER_PAGE, refresh);
+        const { fetchLastestFeed } = props;
+        fetchLastestFeed(page, PER_PAGE, refresh);
       },
       render: (props) => {
-        const { latestItems, latestItemsLoading } = props;
+        const { latestFeed } = props;
+        const { model, loading } = latestFeed;
         return (
           <QiitaList
-            items={latestItems}
-            loading={latestItemsLoading}
+            items={model.items}
+            loading={loading}
             onSelectItem={this._onSelectItem}
             onRefresh={this._onRefresh}
             onEndReached={this._onEndReached}
