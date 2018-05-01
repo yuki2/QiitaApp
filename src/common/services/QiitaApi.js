@@ -1,8 +1,9 @@
+// @flow
 import _ from 'lodash';
 
 const BASE_URL = 'https://qiita.com';
 
-const createUrl = (path, params = {}) => {
+const createUrl = (path: string, params: any = {}) => {
   if (_.isEmpty(params)) {
     return BASE_URL + path;
   }
@@ -13,7 +14,7 @@ const createUrl = (path, params = {}) => {
   return `${BASE_URL + path}?${query}`;
 };
 
-const onFulfill = (response) => {
+const onFulfill = (response: any) => {
   if (!response.ok) {
     // eslint-disable-next-line prefer-promise-reject-errors
     return Promise.reject({ status: response.status });
@@ -22,7 +23,7 @@ const onFulfill = (response) => {
   return response.json();
 };
 
-const onFulfillPaging = (response) => {
+const onFulfillPaging = (response: any) => {
   if (!response.ok) {
     // eslint-disable-next-line prefer-promise-reject-errors
     return Promise.reject({ status: response.status });
@@ -32,15 +33,16 @@ const onFulfillPaging = (response) => {
 };
 
 class QiitaApi {
+  _token: string;
   constructor() {
     this._token = '';
   }
 
-  set token(val) {
+  set token(val: string) {
     this._token = val;
   }
 
-  authedFetch = (url) => {
+  authedFetch = (url: string) => {
     if (_.isEmpty(this._token)) {
       return fetch(url);
     }
@@ -49,7 +51,7 @@ class QiitaApi {
     });
   };
 
-  fetchAccessToken = ({ clientId, clientSecret, code }) => {
+  fetchAccessToken = (clientId: string, clientSecret: string, code: string) => {
     const method = 'POST';
     const body = JSON.stringify({ client_id: clientId, client_secret: clientSecret, code });
     const headers = {
@@ -60,13 +62,13 @@ class QiitaApi {
     return fetch(createUrl(path), { method, headers, body }).then(onFulfill);
   };
 
-  fetchItemsByTag = ({ tag, page = 1, perPage = 20 }) => {
+  fetchItemsByTag = (tag: string, page: number = 1, perPage: number = 20) => {
     const path = `/api/v2/tags/${tag}/items`;
     return this.authedFetch(createUrl(path, { page, per_page: perPage })).then(onFulfillPaging);
   };
 
-  fetchItems = ({ page = 1, perPage = 20 }) => {
-    const path = '/api/v2/items';
+  fetchItems = (page: number = 1, perPage: number = 20) => {
+    const path: string = '/api/v2/items';
     return this.authedFetch(createUrl(path, { page, per_page: perPage })).then(onFulfillPaging);
   };
 
@@ -75,7 +77,7 @@ class QiitaApi {
     return this.authedFetch(createUrl(path)).then(onFulfill);
   };
 
-  fetchFollowingTags = ({ userId, page = 1, perPage = 20 }) => {
+  fetchFollowingTags = (userId: string, page: number = 1, perPage: number = 20) => {
     const path = `/api/v2/users/${userId}/following_tags`;
     const url = createUrl(path, { page, per_page: perPage });
     return this.authedFetch(url).then(onFulfillPaging);

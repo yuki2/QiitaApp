@@ -39,7 +39,7 @@ export function abortFetchLatestFeed(error) {
 function* fetchLatestFeedTask(action) {
   try {
     const { page, perPage, refresh } = action.payload;
-    const res = yield call(QiitaApi.fetchItems, { page, perPage });
+    const res = yield call(QiitaApi.fetchItems, page, perPage);
     const model = parseItems(res);
     yield put(completeFetchLatestFeed(model, refresh));
   } catch (e) {

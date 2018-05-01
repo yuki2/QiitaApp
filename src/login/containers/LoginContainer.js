@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import { Text, Button, View } from 'react-native';
 import { connect } from 'react-redux';
@@ -6,13 +7,17 @@ import PropTypes from 'prop-types';
 
 import { startLoginQiita } from '../modules/session';
 
+type Props = {
+  onLoginPress: () => void,
+};
+
 const mapDispatchToProps = dispatch => ({
   onLoginPress: () => {
     dispatch(startLoginQiita(true));
   },
 });
 
-export class Login extends Component {
+export class Login extends Component<Props> {
   static defaultProps = {
     onLoginPress: () => {},
   };

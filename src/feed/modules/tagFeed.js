@@ -42,12 +42,7 @@ export function abortFetchTagFeed(error) {
 }
 
 function* fetchItemsByTags({ tags, page, perPage }) {
-  const tasks = tags.map(tag =>
-    call(QiitaApi.fetchItemsByTag, {
-      tag,
-      page,
-      perPage,
-    }));
+  const tasks = tags.map(tag => call(QiitaApi.fetchItemsByTag, tag, page, perPage));
 
   const responseArray = yield all(tasks);
   const itemModels = responseArray.map(response => parseItems(response));
@@ -66,7 +61,7 @@ function* fetchTagFeedTask(action) {
     const {
       userId, page, perPage, refresh,
     } = action.payload;
-    const followingTagsRes = yield call(QiitaApi.fetchFollowingTags, { userId, page, perPage });
+    const followingTagsRes = yield call(QiitaApi.fetchFollowingTags, userId, page, perPage);
     const tagsModel = parseTags(followingTagsRes);
     const model = yield call(fetchItemsByTags, {
       tags: tagsModel.tags.map(tag => tag.id),

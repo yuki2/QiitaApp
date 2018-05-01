@@ -75,11 +75,7 @@ function setSession(sessionModel) {
 }
 
 function fetchAccessToken(code) {
-  return QiitaApi.fetchAccessToken({
-    clientId: CLIENT_ID,
-    clientSecret: CLIENT_SECRET,
-    code,
-  });
+  return QiitaApi.fetchAccessToken(CLIENT_ID, CLIENT_SECRET, code);
 }
 
 function* loginQiitaTask(action) {
