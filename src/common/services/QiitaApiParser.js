@@ -8,7 +8,7 @@ export const parseItems = (response) => {
       url: item.url,
       user: item.user,
       tags: item.tags,
-      createdAt: item.created_at,
+      createdAt: new Date(item.created_at),
     })),
   };
 };

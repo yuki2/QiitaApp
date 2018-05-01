@@ -97,19 +97,13 @@ class FeedContainer extends Component {
     {
       fetchItems: (page, refresh, props) => {
         const { fetchTagFeed, myUser } = props;
-        fetchTagFeed(myUser.id, page, PER_PAGE, refresh);
+        fetchTagFeed(myUser.id, page, 20, refresh);
       },
       render: (props) => {
         const { tagFeed } = props;
         const { model, loading } = tagFeed;
         return (
-          <QiitaList
-            items={model.items}
-            loading={loading}
-            onSelectItem={this._onSelectItem}
-            onRefresh={this._onRefresh}
-            onEndReached={this._onEndReached}
-          />
+          <QiitaList items={model.items} loading={loading} onSelectItem={this._onSelectItem} />
         );
       },
     },

@@ -1,4 +1,4 @@
-import { put, call, takeLatest } from 'redux-saga/effects';
+import { put, call, takeLatest, all } from 'redux-saga/effects';
 
 import QiitaApi from '../../common/services/QiitaApi';
 import { parseItems, parseTags } from '../../common/services/QiitaApiParser';
@@ -15,7 +15,20 @@ const initialState = {
   error: {},
 };
 
-const uniqueArray = arrArg => arrArg.filter((elem, pos, arr) => arr.indexOf(elem) === pos);
+/* eslint-disable prefer-const */
+const uniqueItems = (items) => {
+  let uniqueIds = new Set();
+  let newItems = [];
+  items.forEach((item) => {
+    if (uniqueIds.has(item.id)) {
+      return;
+    }
+    uniqueIds.add(item.id);
+    newItems.push(item);
+  });
+  return newItems;
+};
+/* eslint-disable prefer-const */
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
@@ -30,9 +43,9 @@ export default function reducer(state = initialState, action = {}) {
           const { items, totalCount } = action.payload.model;
           let newItems;
           if (action.meta.refresh) {
-            newItems = uniqueArray(items);
+            newItems = uniqueItems(items);
           } else {
-            newItems = uniqueArray(state.model.items.concat(items));
+            newItems = uniqueItems(state.model.items.concat(items));
           }
 
           return {
@@ -84,6 +97,26 @@ export function abortFetchTagFeed(error) {
   return { type: FETCH_TAG_FEED, payload: { error }, meta: { status: Status.ABORT } };
 }
 
+function* fetchItemsByTags({ tags, page, perPage }) {
+  const tasks = tags.map(tag =>
+    call(QiitaApi.fetchItemsByTag, {
+      tag,
+      page,
+      perPage,
+    }));
+
+  const responseArray = yield all(tasks);
+  const itemModels = responseArray.map(response => parseItems(response));
+  const items = itemModels
+    .reduce((accumulator, currentValue) => accumulator.concat(currentValue.items), [])
+    .sort((lItem, rItem) => rItem.createdAt - lItem.createdAt);
+  const totalCount = itemModels.reduce(
+    (accumulator, currentValue) => accumulator + currentValue.totalCount,
+    0,
+  );
+  return { totalCount, items };
+}
+
 function* fetchTagFeedTask(action) {
   try {
     const {
@@ -91,12 +124,11 @@ function* fetchTagFeedTask(action) {
     } = action.payload;
     const followingTagsRes = yield call(QiitaApi.fetchFollowingTags, { userId, page, perPage });
     const tagsModel = parseTags(followingTagsRes);
-    const itemsRes = yield call(QiitaApi.fetchItemsByTags, {
+    const model = yield call(fetchItemsByTags, {
       tags: tagsModel.tags.map(tag => tag.id),
       page,
       perPage,
     });
-    const model = parseItems(itemsRes);
     yield put(completeFetchTagFeed(model, refresh));
   } catch (e) {
     yield put(abortFetchTagFeed(e));

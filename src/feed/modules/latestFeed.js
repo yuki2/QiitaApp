@@ -15,7 +15,20 @@ const initialState = {
   error: {},
 };
 
-const uniqueArray = arrArg => arrArg.filter((elem, pos, arr) => arr.indexOf(elem) === pos);
+/* eslint-disable prefer-const */
+const uniqueItems = (items) => {
+  let uniqueIds = new Set();
+  let newItems = [];
+  items.forEach((item) => {
+    if (uniqueIds.has(item.id)) {
+      return;
+    }
+    uniqueIds.add(item.id);
+    newItems.push(item);
+  });
+  return newItems;
+};
+/* eslint-disable prefer-const */
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
@@ -30,9 +43,9 @@ export default function reducer(state = initialState, action = {}) {
           const { items, totalCount } = action.payload.model;
           let newItems;
           if (action.meta.refresh) {
-            newItems = uniqueArray(items);
+            newItems = uniqueItems(items);
           } else {
-            newItems = uniqueArray(state.model.items.concat(items));
+            newItems = uniqueItems(state.model.items.concat(items));
           }
 
           return {

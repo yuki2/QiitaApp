@@ -60,21 +60,14 @@ class QiitaApi {
     return fetch(createUrl(path), { method, headers, body }).then(onFulfill);
   };
 
-  fetchItemsWithTag = (tag) => {
+  fetchItemsByTag = ({ tag, page = 1, perPage = 20 }) => {
     const path = `/api/v2/tags/${tag}/items`;
-    return this.authedFetch(createUrl(path)).then(onFulfillPaging);
+    return this.authedFetch(createUrl(path, { page, per_page: perPage })).then(onFulfillPaging);
   };
 
   fetchItems = ({ page = 1, perPage = 20 }) => {
     const path = '/api/v2/items';
     return this.authedFetch(createUrl(path, { page, per_page: perPage })).then(onFulfillPaging);
-  };
-
-  fetchItemsByTags = ({ tags, page = 1, perPage = 20 }) => {
-    const query = tags.join(' OR ');
-    const path = '/api/v2/items';
-    const url = createUrl(path, { query, page, per_page: perPage });
-    return this.authedFetch(url).then(onFulfillPaging);
   };
 
   fetchAuthenticatedUser = () => {
