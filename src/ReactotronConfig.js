@@ -1,6 +1,13 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import Reactotron from 'reactotron-react-native';
-
-Reactotron.configure() // controls connection & communication settings
-  .useReactNative() // add all built-in react native plugins
-  .connect(); // let's connect!
+// eslint-disable-next-line no-undef
+if (__DEV__) {
+  /* eslint-disable global-require */
+  const reactotron = require('reactotron-react-native').default;
+  const { reactotronRedux } = require('reactotron-redux');
+  const sagaPlugin = require('reactotron-redux-saga');
+  /* eslint-disable global-require */
+  reactotron
+    .configure({ name: 'QiitaApp' })
+    .use(reactotronRedux())
+    .use(sagaPlugin())
+    .connect();
+}
