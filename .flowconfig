@@ -18,6 +18,10 @@
 
 ; Ignore metro
 .*/node_modules/metro/.*
+
+; Ignore react-native-tab-view
+.*/node_modules/react-native-tab-view/.*
+
 ./libdefs.js
 [include]
 

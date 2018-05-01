@@ -1,13 +1,15 @@
+// @flow
 import React, { Component } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
+import type { QiitaItemsModel, QiitaUser, QiitaItem } from '../../flow-type';
+
+import { openInAppBrowser } from '../../common/modules/inAppWebView';
 
 import QiitaList from './QiitaList';
 import { startFetchLatestFeed } from '../modules/latestFeed';
 import { startFetchTagFeed } from '../modules/tagFeed';
-import { openInAppBrowser } from '../../common/modules/inAppWebView';
 
 const PER_PAGE = 50;
 
@@ -40,22 +42,33 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-class FeedContainer extends Component {
+type Props = {
+  fetchLastestFeed: (page: number, perPage: number, refresh: boolean) => void,
+  fetchTagFeed: (userId: string, page: number, perPage: number, refresh: boolean) => void,
+  openInAppBrowserByUrl: (url: string) => void,
+  latestFeed: { loading: boolean, model: QiitaItemsModel },
+  tagFeed: { loading: boolean, model: QiitaItemsModel },
+  myUser: QiitaUser,
+};
+type State = {
+  index: number,
+  routes: Array<any>,
+};
+type FunctionMap = Array<{
+  fetchItems: (page: number, refresh: boolean, props: Props) => void,
+  render: (props: Props) => any,
+}>;
+class FeedContainer extends Component<Props, State> {
   static defaultProps = {
     fetchLastestFeed: () => {},
+    fetchTagFeed: () => {},
     openInAppBrowserByUrl: () => {},
     latestFeed: { loading: true, model: { items: [] } },
     tagFeed: { loading: true, model: { items: [] } },
     myUser: {},
   };
-  static propTypes = {
-    fetchLastestFeed: PropTypes.func,
-    openInAppBrowserByUrl: PropTypes.func,
-    latestFeed: PropTypes.object,
-    tagFeed: PropTypes.object,
-    myUser: PropTypes.object,
-  };
-  constructor(props) {
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       index: 0,
@@ -69,18 +82,18 @@ class FeedContainer extends Component {
     };
     this.functionMap = this._createFunctionMap();
   }
-
   componentDidMount = () => {
     this.functionMap.forEach(f => f.fetchItems(1, true, this.props));
   };
+  functionMap: FunctionMap;
 
-  _createFunctionMap = () => [
+  _createFunctionMap = (): FunctionMap => [
     {
-      fetchItems: (page, refresh, props) => {
+      fetchItems: (page: number, refresh: boolean, props: Props) => {
         const { fetchLastestFeed } = props;
         fetchLastestFeed(page, PER_PAGE, refresh);
       },
-      render: (props) => {
+      render: (props: Props) => {
         const { latestFeed } = props;
         const { model, loading } = latestFeed;
         return (
@@ -95,11 +108,11 @@ class FeedContainer extends Component {
       },
     },
     {
-      fetchItems: (page, refresh, props) => {
+      fetchItems: (page: number, refresh: boolean, props: Props) => {
         const { fetchTagFeed, myUser } = props;
         fetchTagFeed(myUser.id, page, 20, refresh);
       },
-      render: (props) => {
+      render: (props: Props) => {
         const { tagFeed } = props;
         const { model, loading } = tagFeed;
         return (
@@ -113,21 +126,21 @@ class FeedContainer extends Component {
     this._fetchItems(1, true);
   };
 
-  _onEndReached = (distanceFromEnd, size) => {
+  _onEndReached = (distanceFromEnd: number, size: number) => {
     const page = size / PER_PAGE + 1;
     this._fetchItems(page, false);
   };
 
-  _fetchItems = (page, refresh) => {
+  _fetchItems = (page: number, refresh: boolean) => {
     const { index } = this.state;
     this.functionMap[index].fetchItems(page, refresh, this.props);
   };
 
-  _onSelectItem = (item) => {
+  _onSelectItem = (item: QiitaItem) => {
     this.props.openInAppBrowserByUrl(item.url);
   };
 
-  _handleIndexChange = index => this.setState({ index });
+  _handleIndexChange = (index: number) => this.setState({ index });
 
   _renderHeader = props => <TabBar style={tabStyles.tabBar} {...props} />;
 

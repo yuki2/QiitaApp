@@ -1,10 +1,27 @@
 // @flow
+
+export type QiitaUser = {
+  description: string,
+  facebookId: string,
+  followeesCount: number,
+  followersCount: number,
+  githubLoginName: string,
+  id: string,
+  itemsCount: number,
+  name: string,
+  organization: string,
+  permanentId: number,
+  profileImageUrl: string,
+  twitterScreenName: string,
+  websiteUrl: string,
+};
+
 export type QiitaItem = {
   id: string,
   title: string,
   url: string,
-  user: any,
-  tags: any,
+  user: QiitaUser,
+  tags: Array<any>,
   createdAt: Date,
 };
 
