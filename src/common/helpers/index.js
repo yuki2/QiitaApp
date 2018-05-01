@@ -34,3 +34,45 @@ export function createCompleteAction(type, payload = {}, meta = {}) {
 export function createAbortAction(type, payload = {}, meta = {}) {
   return createAction(type, payload, meta, Status.ABORT);
 }
+
+export function defaultReducer(state = {}, action = {}, actionType) {
+  switch (action.type) {
+    case actionType:
+      switch (action.meta.status) {
+        case Status.PROCESSING:
+          return {
+            ...state,
+            loading: true,
+          };
+        case Status.COMPLETE: {
+          const { items, totalCount } = action.payload.model;
+          let newItems;
+          if (action.meta.refresh) {
+            newItems = uniqueItems(items);
+          } else {
+            newItems = uniqueItems(state.model.items.concat(items));
+          }
+
+          return {
+            ...state,
+            model: {
+              totalCount,
+              items: newItems,
+            },
+            loading: false,
+            error: {},
+          };
+        }
+        case Status.ABORT:
+          return {
+            ...state,
+            loading: false,
+            error: action.payload.error,
+          };
+        default:
+          return state;
+      }
+    default:
+      return state;
+  }
+}

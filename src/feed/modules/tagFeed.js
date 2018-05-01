@@ -8,6 +8,7 @@ import {
   createStartAction,
   createCompleteAction,
   createAbortAction,
+  defaultReducer,
 } from '../../common/helpers';
 
 const FETCH_TAG_FEED = 'FETCH_TAG_FEED';
@@ -22,45 +23,7 @@ const initialState = {
 };
 
 export default function reducer(state = initialState, action = {}) {
-  switch (action.type) {
-    case FETCH_TAG_FEED:
-      switch (action.meta.status) {
-        case Status.PROCESSING:
-          return {
-            ...state,
-            loading: true,
-          };
-        case Status.COMPLETE: {
-          const { items, totalCount } = action.payload.model;
-          let newItems;
-          if (action.meta.refresh) {
-            newItems = uniqueItems(items);
-          } else {
-            newItems = uniqueItems(state.model.items.concat(items));
-          }
-
-          return {
-            ...state,
-            model: {
-              totalCount,
-              items: newItems,
-            },
-            loading: false,
-            error: {},
-          };
-        }
-        case Status.ABORT:
-          return {
-            ...state,
-            loading: false,
-            error: action.payload.error,
-          };
-        default:
-          return state;
-      }
-    default:
-      return state;
-  }
+  return defaultReducer(state, action, FETCH_TAG_FEED);
 }
 
 export function startFetchTagFeed(userId, page = 1, perPage = 20, refresh = false) {
