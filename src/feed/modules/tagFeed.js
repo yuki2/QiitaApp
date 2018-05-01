@@ -3,6 +3,12 @@ import { put, call, takeLatest, all } from 'redux-saga/effects';
 import QiitaApi from '../../common/services/QiitaApi';
 import { parseItems, parseTags } from '../../common/services/QiitaApiParser';
 import { Status } from '../../common/constants';
+import {
+  uniqueItems,
+  createStartAction,
+  createCompleteAction,
+  createAbortAction,
+} from '../../common/helpers';
 
 const FETCH_TAG_FEED = 'FETCH_TAG_FEED';
 
@@ -14,21 +20,6 @@ const initialState = {
   },
   error: {},
 };
-
-/* eslint-disable prefer-const */
-const uniqueItems = (items) => {
-  let uniqueIds = new Set();
-  let newItems = [];
-  items.forEach((item) => {
-    if (uniqueIds.has(item.id)) {
-      return;
-    }
-    uniqueIds.add(item.id);
-    newItems.push(item);
-  });
-  return newItems;
-};
-/* eslint-disable prefer-const */
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
@@ -73,28 +64,20 @@ export default function reducer(state = initialState, action = {}) {
 }
 
 export function startFetchTagFeed(userId, page = 1, perPage = 20, refresh = false) {
-  return {
-    type: FETCH_TAG_FEED,
-    payload: {
-      userId,
-      page,
-      perPage,
-      refresh,
-    },
-    meta: { status: Status.PROCESSING },
-  };
+  return createStartAction(FETCH_TAG_FEED, {
+    userId,
+    page,
+    perPage,
+    refresh,
+  });
 }
 
 export function completeFetchTagFeed(model, refresh) {
-  return {
-    type: FETCH_TAG_FEED,
-    payload: { model },
-    meta: { status: Status.COMPLETE, refresh },
-  };
+  return createCompleteAction(FETCH_TAG_FEED, { model }, { refresh });
 }
 
 export function abortFetchTagFeed(error) {
-  return { type: FETCH_TAG_FEED, payload: { error }, meta: { status: Status.ABORT } };
+  return createAbortAction(FETCH_TAG_FEED, { error });
 }
 
 function* fetchItemsByTags({ tags, page, perPage }) {

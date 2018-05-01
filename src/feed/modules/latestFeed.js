@@ -3,6 +3,12 @@ import { put, call, takeLatest } from 'redux-saga/effects';
 import QiitaApi from '../../common/services/QiitaApi';
 import { parseItems } from '../../common/services/QiitaApiParser';
 import { Status } from '../../common/constants';
+import {
+  uniqueItems,
+  createStartAction,
+  createCompleteAction,
+  createAbortAction,
+} from '../../common/helpers';
 
 const FETCH_LATEST_FEED = 'FETCH_LATEST_FEED';
 
@@ -14,21 +20,6 @@ const initialState = {
   },
   error: {},
 };
-
-/* eslint-disable prefer-const */
-const uniqueItems = (items) => {
-  let uniqueIds = new Set();
-  let newItems = [];
-  items.forEach((item) => {
-    if (uniqueIds.has(item.id)) {
-      return;
-    }
-    uniqueIds.add(item.id);
-    newItems.push(item);
-  });
-  return newItems;
-};
-/* eslint-disable prefer-const */
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
@@ -73,23 +64,15 @@ export default function reducer(state = initialState, action = {}) {
 }
 
 export function startFetchLatestFeed(page = 1, perPage = 20, refresh = false) {
-  return {
-    type: FETCH_LATEST_FEED,
-    payload: { page, perPage, refresh },
-    meta: { status: Status.PROCESSING },
-  };
+  return createStartAction(FETCH_LATEST_FEED, { page, perPage, refresh });
 }
 
 export function completeFetchLatestFeed(model, refresh) {
-  return {
-    type: FETCH_LATEST_FEED,
-    payload: { model },
-    meta: { status: Status.COMPLETE, refresh },
-  };
+  return createCompleteAction(FETCH_LATEST_FEED, { model }, { refresh });
 }
 
 export function abortFetchLatestFeed(error) {
-  return { type: FETCH_LATEST_FEED, payload: { error }, meta: { status: Status.ABORT } };
+  return createAbortAction(FETCH_LATEST_FEED, { error });
 }
 
 function* fetchLatestFeedTask(action) {
