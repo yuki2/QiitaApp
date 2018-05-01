@@ -18,8 +18,6 @@
 
 ; Ignore metro
 .*/node_modules/metro/.*
-
-.*/node_modules/.*
 ./libdefs.js
 [include]
 

@@ -1,4 +1,7 @@
-export const parseItems = (response) => {
+// @flow
+import type { PagingResponse, QiitaTagsModel, QiitaItemsModel } from '../../flow-type';
+
+export function parseItems(response: PagingResponse): QiitaItemsModel {
   const { totalCount, items } = response;
   return {
     totalCount,
@@ -11,9 +14,9 @@ export const parseItems = (response) => {
       createdAt: new Date(item.created_at),
     })),
   };
-};
+}
 
-export const parseTags = (response) => {
+export function parseTags(response: PagingResponse): QiitaTagsModel {
   const { totalCount, items } = response;
   return {
     totalCount,
@@ -22,4 +25,4 @@ export const parseTags = (response) => {
       iconUrl: item.icon_url,
     })),
   };
-};
+}
