@@ -2,9 +2,7 @@ import { put, call, takeLatest } from 'redux-saga/effects';
 
 import QiitaApi from '../../common/services/QiitaApi';
 import { parseItems } from '../../common/services/QiitaApiParser';
-import { Status } from '../../common/constants';
 import {
-  uniqueItems,
   createStartAction,
   createCompleteAction,
   createAbortAction,
