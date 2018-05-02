@@ -56,4 +56,4 @@ buck-out/
 *.jsbundle
 
 # Secret
-src/common/constants/secret.js
+.env
