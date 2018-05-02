@@ -1,7 +1,8 @@
+// @flow
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native';
+
+import type { QiitaItem } from '../../flow-type';
 
 const styles = StyleSheet.create({
   container: {
@@ -43,35 +44,29 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class QiitaCell extends Component {
+type Props = {
+  item: QiitaItem,
+  onSelect: (item: QiitaItem) => void,
+};
+export default class QiitaCell extends Component<Props> {
   static defaultProps = {
     onSelect: () => {},
     item: {},
   };
-  static propTypes = {
-    onSelect: PropTypes.func,
-    item: PropTypes.object,
-  };
-  constructor(props) {
-    super(props);
-    this.onSelect = this.props.onSelect;
-    this.item = this.props.item;
-  }
 
-  createTag = (item) => {
-    item.tags.map(tag => tag.name).join(', ');
-  };
+  createTag = (item: QiitaItem): string => item.tags.map(tag => tag.name).join(', ');
 
   render() {
+    const { onSelect, item } = this.props;
     return (
-      <TouchableHighlight onPress={() => this.onSelect()}>
+      <TouchableHighlight onPress={onSelect}>
         <View style={styles.container}>
           <View style={styles.row}>
-            <Image source={{ uri: this.item.user.profile_image_url }} style={styles.thumbnail} />
-            <Text style={styles.name}>{this.item.user.id}</Text>
+            <Image source={{ uri: item.user.profileImageUrl }} style={styles.thumbnail} />
+            <Text style={styles.name}>{item.user.id}</Text>
           </View>
-          <Text style={styles.title}>{this.item.title}</Text>
-          <Text style={styles.tag}>{this.item.tags.map(tag => tag.name).join(', ')}</Text>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.tag}>{item.tags.map(tag => tag.name).join(', ')}</Text>
         </View>
       </TouchableHighlight>
     );

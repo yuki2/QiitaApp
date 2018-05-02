@@ -1,7 +1,9 @@
+// @flow
 import React, { Component } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
+
+import type { QiitaItem } from '../../flow-type';
 
 import QiitaCell from './QiitaCell';
 import withIndicator from './withIndicator';
@@ -25,20 +27,21 @@ const styles = StyleSheet.create({
 
 const separator = () => <View style={styles.separator} />;
 
-class QiitaList extends Component {
+type Props = {
+  items: Array<QiitaItem>,
+  loading: boolean,
+  onSelectItem: (item: QiitaItem) => void,
+  onRefresh: () => void,
+  onEndReached: (distanceFromEnd: number, size: number) => void,
+};
+
+class QiitaList extends Component<Props> {
   static defaultProps = {
     items: [],
     loading: true,
     onSelectItem: () => {},
     onRefresh: () => {},
     onEndReached: () => {},
-  };
-  static propTypes = {
-    items: PropTypes.array,
-    loading: PropTypes.bool,
-    onSelectItem: PropTypes.func,
-    onRefresh: PropTypes.func,
-    onEndReached: PropTypes.func,
   };
 
   renderItem = ({ item }) => (
@@ -52,7 +55,6 @@ class QiitaList extends Component {
     return (
       <View style={styles.container}>
         <FlatList
-          shouldItemUpdate={(props, nextProps) => props.item !== nextProps.item}
           initialNumToRender={10}
           style={styles.listView}
           data={items}
@@ -68,10 +70,7 @@ class QiitaList extends Component {
     );
   };
 
-  render = () => {
-    const { items } = this.props;
-    return this.renderListView(items);
-  };
+  render = () => this.renderListView();
 }
 
 export default withIndicator(QiitaList);
