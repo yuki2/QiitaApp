@@ -76,10 +76,10 @@ export default class App extends Component {
 
   startApp = (loginStatus) => {
     switch (loginStatus) {
-      case LoginStatus.NOT_LOGIN:
+      case LoginStatus.NOT_LOGGEDIN:
         this.startLogin();
         break;
-      case LoginStatus.LOGIN:
+      case LoginStatus.LOGGEDIN_AS_USER:
         this.startTabApp();
         break;
       default:

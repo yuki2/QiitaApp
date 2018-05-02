@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
 
 type Props = {
   onLoginPress: () => void,
-  onGuestLoginPress: () => void,
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -53,11 +52,10 @@ const mapDispatchToProps = dispatch => ({
 export class Login extends PureComponent<Props> {
   static defaultProps = {
     onLoginPress: () => {},
-    onGuestLoginPress: () => {},
   };
 
   render = () => {
-    const { onLoginPress, onGuestLoginPress } = this.props;
+    const { onLoginPress } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -65,9 +63,6 @@ export class Login extends PureComponent<Props> {
         </View>
         <TouchableOpacity style={styles.buttonContainer} onPress={onLoginPress}>
           <Text style={styles.buttonText}>LOGIN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onGuestLoginPress}>
-          <Text style={styles.guestText}>Continue without login</Text>
         </TouchableOpacity>
       </View>
     );
