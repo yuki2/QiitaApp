@@ -14,6 +14,7 @@ const oAuthSession = Platform.select({
 const LOGIN_QIITA = 'LOGIN_QIITA';
 
 export const LoginStatus = keyMirror({
+  UNKNOWN: null,
   NOT_LOGGEDIN: null,
   LOGGEDIN_AS_USER: null,
   LOGGEDIN_AS_GUEST: null,
@@ -36,7 +37,8 @@ export function abortLoginQiita(error) {
 }
 
 const initialState = {
-  loginStatus: LoginStatus.NOT_LOGGEDIN,
+  loading: false,
+  loginStatus: LoginStatus.UNKNOWN,
   myUser: {},
   error: {},
 };
@@ -45,17 +47,24 @@ export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOGIN_QIITA:
       switch (action.meta.status) {
+        case Status.PROCESSING:
+          return {
+            ...state,
+            loading: true,
+          };
         case Status.COMPLETE:
           return {
             ...state,
             myUser: action.payload.myUser,
             loginStatus: action.payload.loginStatus,
+            loading: false,
             error: {},
           };
         case Status.ABORT:
           return {
             myUser: {},
             loginStatus: LoginStatus.NOT_LOGGEDIN,
+            loading: false,
             error: action.payload.error,
           };
         default:

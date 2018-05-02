@@ -41,7 +41,12 @@ const styles = StyleSheet.create({
 
 type Props = {
   onLoginPress: () => void,
+  loginButtonDisable: boolean,
 };
+
+const mapStateToProps = state => ({
+  loginButtonDisable: state.session.loading,
+});
 
 const mapDispatchToProps = dispatch => ({
   onLoginPress: () => {
@@ -55,13 +60,17 @@ export class Login extends PureComponent<Props> {
   };
 
   render = () => {
-    const { onLoginPress } = this.props;
+    const { onLoginPress, loginButtonDisable } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>QiitaApp</Text>
         </View>
-        <TouchableOpacity style={styles.buttonContainer} onPress={onLoginPress}>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={onLoginPress}
+          disabled={loginButtonDisable}
+        >
           <Text style={styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
       </View>
@@ -69,4 +78,4 @@ export class Login extends PureComponent<Props> {
   };
 }
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
