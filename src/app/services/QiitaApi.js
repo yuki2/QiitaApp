@@ -1,7 +1,7 @@
 // @flow
 import _ from 'lodash';
 
-import type { PagingResponse } from '../../flow-type';
+import type { PagingResponse } from '../flow-type';
 
 const BASE_URL = 'https://qiita.com';
 

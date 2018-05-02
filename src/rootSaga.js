@@ -1,7 +1,7 @@
-import { subscribeFetchLatestFeed } from './feed/modules/latestFeed';
-import { subscribeFetchLatestItems } from './feed/modules/tagFeed';
-import { subscribeOpenInAppBrowser } from './common/modules/inAppWebView';
-import { subscribeLoginQiita } from './login/modules/session';
+import { subscribeFetchLatestFeed } from './app/modules/latestFeed';
+import { subscribeFetchLatestItems } from './app/modules/tagFeed';
+import { subscribeOpenInAppBrowser } from './app/modules/inAppWebView';
+import { subscribeLoginQiita } from './app/modules/session';
 
 export default [
   subscribeFetchLatestFeed,

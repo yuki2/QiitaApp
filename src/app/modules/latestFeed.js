@@ -1,7 +1,7 @@
 import { put, call, takeLatest } from 'redux-saga/effects';
 
-import QiitaApi from '../../common/services/QiitaApi';
-import { parseItems } from '../../common/services/QiitaApiParser';
+import QiitaApi from '../services/QiitaApi';
+import { parseItems } from '../services/QiitaApiParser';
 import {
   createStartAction,
   createCompleteAction,

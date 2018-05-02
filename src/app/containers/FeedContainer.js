@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
-import type { QiitaItemsModel, QiitaUser, QiitaItem } from '../../flow-type';
+import type { QiitaItemsModel, QiitaUser, QiitaItem } from '../flow-type';
 
-import { openInAppBrowser } from '../../common/modules/inAppWebView';
+import { openInAppBrowser } from '../modules/inAppWebView';
 
 import QiitaList from './QiitaList';
 import { startFetchLatestFeed } from '../modules/latestFeed';

@@ -1,5 +1,5 @@
 // @flow
-import type { PagingResponse, QiitaTagsModel, QiitaItemsModel, QiitaUser } from '../../flow-type';
+import type { PagingResponse, QiitaTagsModel, QiitaItemsModel, QiitaUser } from '../flow-type';
 
 export function parseUser(response: any): QiitaUser {
   return {

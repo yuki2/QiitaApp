@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native';
 
-import type { QiitaItem } from '../../flow-type';
+import type { QiitaItem } from '../flow-type';
 
 const styles = StyleSheet.create({
   container: {

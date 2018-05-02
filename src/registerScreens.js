@@ -1,9 +1,9 @@
 import { Navigation } from 'react-native-navigation';
 
-import FeedContainer from './feed/containers/FeedContainer';
-import QiitaItemView from './feed/containers/QiitaItemView';
-import SearchComponent from './search/SearchComponent';
-import LoginContainer from './login/containers/LoginContainer';
+import FeedContainer from './app/containers/FeedContainer';
+import QiitaItemView from './app/containers/QiitaItemView';
+import SearchComponent from './app/containers/SearchComponent';
+import LoginContainer from './app/containers/LoginContainer';
 
 const registerScreens = (store, Provider) => {
   Navigation.registerComponent('qiitaapp.FeedContainer', () => FeedContainer, store, Provider);

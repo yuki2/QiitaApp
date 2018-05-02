@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
 import _ from 'lodash';
 
-import type { QiitaItem } from '../../flow-type';
+import type { QiitaItem } from '../flow-type';
 
 import QiitaCell from './QiitaCell';
 import withIndicator from './withIndicator';

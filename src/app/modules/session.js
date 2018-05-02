@@ -4,7 +4,7 @@ import keyMirror from 'keymirror';
 
 import { Status } from '../../common/constants';
 import { CLIENT_ID, CLIENT_SECRET } from '../../common/constants/secret';
-import QiitaApi from '../../common/services/QiitaApi';
+import QiitaApi from '../services/QiitaApi';
 
 const oAuthSession = Platform.select({
   ios: NativeModules.OAuthSession,

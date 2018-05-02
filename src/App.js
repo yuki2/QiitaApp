@@ -6,7 +6,7 @@ import './ReactotronConfig';
 import registerScreens from './registerScreens';
 import configureStore from './configureStore';
 
-import { LoginStatus, startLoginQiita } from './login/modules/session';
+import { LoginStatus, startLoginQiita } from './app/modules/session';
 
 import rssIcon from './assets/rss.png';
 import searchIcon from './assets/search.png';
