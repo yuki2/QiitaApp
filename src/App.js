@@ -64,10 +64,12 @@ export default class App extends Component {
         },
         {
           label: 'Search',
-          screen: 'qiitaapp.SearchComponent',
+          screen: 'qiitaapp.SearchContainer',
           title: 'Search',
           icon: searchIcon,
-          navigatorStyle,
+          navigatorStyle: {
+            navBarHidden: true,
+          },
         },
       ],
       tabsStyle: {
