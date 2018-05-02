@@ -12,7 +12,7 @@ import {
 const FETCH_TAG_FEED = 'FETCH_TAG_FEED';
 
 const initialState = {
-  loading: true,
+  loading: false,
   model: {
     totalCount: 0,
     items: [],

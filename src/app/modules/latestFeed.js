@@ -12,7 +12,7 @@ import {
 const FETCH_LATEST_FEED = 'FETCH_LATEST_FEED';
 
 const initialState = {
-  loading: true,
+  loading: false,
   model: {
     totalCount: 0,
     items: [],
