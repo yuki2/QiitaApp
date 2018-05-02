@@ -138,7 +138,7 @@ class FeedContainer extends Component<Props, State> {
 
   _fetchItems = (page: number, refresh: boolean) => {
     const { index } = this.state;
-    this.functionMap[index].fetchItems(page, refresh, this.props);
+    this.adapter[index].fetchItems(page, refresh, this.props);
   };
 
   _onSelectItem = (item: QiitaItem) => {
@@ -149,7 +149,7 @@ class FeedContainer extends Component<Props, State> {
 
   _renderHeader = props => <TabBar style={tabStyles.tabBar} {...props} />;
 
-  _renderScene = ({ index }) => this.functionMap[index].render(this.props);
+  _renderScene = ({ index }) => this.adapter[index].render(this.props);
 
   render() {
     return (
