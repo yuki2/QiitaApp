@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import { Navigation } from 'react-native-navigation';
 import { Provider } from 'react-redux';
 
@@ -13,9 +12,8 @@ import { iconsMap } from './app/services/appIcons';
 const store = configureStore();
 registerScreens(store, Provider);
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
+export default class App {
+  constructor() {
     store.subscribe(this.onStoreUpdate.bind(this));
     store.dispatch(startInitializeApplication());
   }
@@ -37,11 +35,9 @@ export default class App extends Component {
     Navigation.startSingleScreenApp({
       screen: {
         screen: 'qiitaapp.LoginContainer',
-        title: 'Welcome',
         navigatorStyle: {
           navBarHidden: true,
         },
-        navigatorButtons: {},
       },
     });
   };
@@ -50,18 +46,14 @@ export default class App extends Component {
     Navigation.startTabBasedApp({
       tabs: [
         {
-          label: 'Feed',
           screen: 'qiitaapp.FeedContainer',
-          title: 'Feed',
           icon: iconsMap['ios-paper-outline'],
           navigatorStyle: {
             navBarHidden: true,
           },
         },
         {
-          label: 'Search',
           screen: 'qiitaapp.SearchContainer',
-          title: 'Search',
           icon: iconsMap['ios-search-outline'],
           navigatorStyle: {
             navBarHidden: true,
