@@ -4,7 +4,7 @@ import keyMirror from 'keymirror';
 import Config from 'react-native-config';
 import _ from 'lodash';
 
-import { Status } from './utility';
+import { Status, createStartAction, createCompleteAction, createAbortAction } from './utility';
 import QiitaApi from '../services/QiitaApi';
 
 const oAuthSession = Platform.select({
@@ -21,19 +21,15 @@ export const LoginStatus = keyMirror({
 });
 
 export function startLoginQiita(requiredUI) {
-  return {
-    type: LOGIN_QIITA,
-    payload: { requiredUI },
-    meta: { status: Status.PROCESSING },
-  };
+  return createStartAction(LOGIN_QIITA, { requiredUI }, null);
 }
 
 export function completeLoginQiita(myUser, loginStatus) {
-  return { type: LOGIN_QIITA, payload: { myUser, loginStatus }, meta: { status: Status.COMPLETE } };
+  return createCompleteAction(LOGIN_QIITA, { myUser, loginStatus }, null);
 }
 
 export function abortLoginQiita(error) {
-  return { type: LOGIN_QIITA, payload: { error }, meta: { status: Status.ABORT } };
+  return createAbortAction(LOGIN_QIITA, { error }, null);
 }
 
 const initialState = {
@@ -89,7 +85,6 @@ function fetchAccessToken(code) {
 
 const AUTH_URL = 'https://qiita.com/api/v2/oauth/authorize';
 const SCOPES = ['read_qiita'];
-const SCHEMA = 'qiitaapp';
 
 function* loginQiitaTask(action) {
   try {
@@ -104,7 +99,7 @@ function* loginQiitaTask(action) {
         url: AUTH_URL,
         clientId: Config.CLIENT_ID,
         scopes: SCOPES,
-        schema: SCHEMA,
+        schema: Config.SCHEMA,
       });
       const { token } = yield call(fetchAccessToken, code);
       yield call(setSession, { token });
