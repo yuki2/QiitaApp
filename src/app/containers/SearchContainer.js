@@ -44,7 +44,6 @@ type Props = {
 class SearchContainer extends Component<Props> {
   _onChangeText = (text: string) => {
     const { searchItems } = this.props;
-    console.log(text);
     searchItems(text, 1, PER_PAGE, true);
   };
 
