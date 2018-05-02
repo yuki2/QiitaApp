@@ -1,6 +1,8 @@
-import { Status } from '../constants';
+import keyMirror from 'keymirror';
 
 /* eslint-disable prefer-const */
+export const Status = keyMirror({ PROCESSING: null, COMPLETE: null, ABORT: null });
+
 export function uniqueItems(items) {
   let uniqueIds = new Set();
   let newItems = [];

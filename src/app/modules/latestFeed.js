@@ -7,7 +7,7 @@ import {
   createCompleteAction,
   createAbortAction,
   defaultReducer,
-} from '../../common/helpers';
+} from './utility';
 
 const FETCH_LATEST_FEED = 'FETCH_LATEST_FEED';
 

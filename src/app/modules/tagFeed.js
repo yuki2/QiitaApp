@@ -7,7 +7,7 @@ import {
   createCompleteAction,
   createAbortAction,
   defaultReducer,
-} from '../../common/helpers';
+} from './utility';
 
 const FETCH_TAG_FEED = 'FETCH_TAG_FEED';
 

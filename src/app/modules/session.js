@@ -2,7 +2,7 @@ import { Platform, NativeModules, AsyncStorage } from 'react-native';
 import { put, call, takeLatest } from 'redux-saga/effects';
 import keyMirror from 'keymirror';
 
-import { Status } from '../../common/constants';
+import { Status } from './utility';
 import { CLIENT_ID, CLIENT_SECRET } from '../../common/constants/secret';
 import QiitaApi from '../services/QiitaApi';
 
