@@ -54,7 +54,7 @@ type State = {
   index: number,
   routes: Array<any>,
 };
-type FunctionMap = Array<{
+type Adapter = Array<{
   fetchItems: (page: number, refresh: boolean, props: Props) => void,
   render: (props: Props) => any,
 }>;
@@ -80,14 +80,14 @@ class FeedContainer extends Component<Props, State> {
         { key: 'tagFeed', title: 'Tag Feed' },
       ],
     };
-    this.functionMap = this._createFunctionMap();
+    this.adapter = this._createAdapter();
   }
   componentDidMount = () => {
-    this.functionMap.forEach(f => f.fetchItems(1, true, this.props));
+    this.adapter.forEach(f => f.fetchItems(1, true, this.props));
   };
-  functionMap: FunctionMap;
+  adapter: Adapter;
 
-  _createFunctionMap = (): FunctionMap => [
+  _createAdapter = (): Adapter => [
     {
       fetchItems: (page: number, refresh: boolean, props: Props) => {
         const { fetchLastestFeed } = props;
@@ -116,7 +116,12 @@ class FeedContainer extends Component<Props, State> {
         const { tagFeed } = props;
         const { model, loading } = tagFeed;
         return (
-          <QiitaList items={model.items} loading={loading} onSelectItem={this._onSelectItem} />
+          <QiitaList
+            items={model.items}
+            loading={loading}
+            onRefresh={this._onRefresh}
+            onSelectItem={this._onSelectItem}
+          />
         );
       },
     },
