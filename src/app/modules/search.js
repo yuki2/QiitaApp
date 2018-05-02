@@ -42,7 +42,7 @@ export function abortSearchItems(error) {
   return createAbortAction(SEARCH_ITEMS, { error });
 }
 
-function* fetchLatestFeedTask(action) {
+function* fetchSearchItemsTask(action) {
   try {
     const {
       query, page, perPage, refresh,
@@ -63,5 +63,5 @@ export function* subscribeSearchItems() {
   yield takeLatest((action) => {
     const expected = startSearchItems();
     return action.type === expected.type && action.meta.status === expected.meta.status;
-  }, fetchLatestFeedTask);
+  }, fetchSearchItemsTask);
 }
