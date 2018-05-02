@@ -7,6 +7,7 @@ import registerScreens from './registerScreens';
 import configureStore from './configureStore';
 import { PRIMARY_COLOR } from './app/design';
 import { LoginStatus, startLoginQiita } from './app/modules/session';
+import { iconsMap, iconsLoaded } from './app/services/appIcons';
 
 import rssIcon from './assets/rss.png';
 import searchIcon from './assets/search.png';
@@ -18,7 +19,9 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     store.subscribe(this.onStoreUpdate.bind(this));
-    store.dispatch(startLoginQiita(false));
+    iconsLoaded.then(() => {
+      store.dispatch(startLoginQiita(false));
+    });
   }
 
   onStoreUpdate() {
@@ -52,7 +55,7 @@ export default class App extends Component {
           label: 'Feed',
           screen: 'qiitaapp.FeedContainer',
           title: 'Feed',
-          icon: rssIcon,
+          icon: iconsMap['ios-paper-outline'],
           navigatorStyle: {
             navBarHidden: true,
           },
@@ -61,7 +64,7 @@ export default class App extends Component {
           label: 'Search',
           screen: 'qiitaapp.SearchContainer',
           title: 'Search',
-          icon: searchIcon,
+          icon: iconsMap['ios-search-outline'],
           navigatorStyle: {
             navBarHidden: true,
           },
