@@ -1,11 +1,11 @@
 import { Component } from 'react';
 import { Navigation } from 'react-native-navigation';
 import { Provider } from 'react-redux';
-import './ReactotronConfig';
 
+import './ReactotronConfig';
 import registerScreens from './registerScreens';
 import configureStore from './configureStore';
-
+import { PRIMARY_COLOR, WITH_NAVBAR_STYLE } from './app/design';
 import { LoginStatus, startLoginQiita } from './app/modules/session';
 
 import rssIcon from './assets/rss.png';
@@ -13,15 +13,6 @@ import searchIcon from './assets/search.png';
 
 const store = configureStore();
 registerScreens(store, Provider);
-
-const navigatorStyle = {
-  navBarTranslucent: false,
-  navBarNoBorder: true,
-  navBarTextColor: 'white',
-  navBarButtonColor: 'white',
-  navBarBackgroundColor: '#59BB0C',
-  statusBarTextColorScheme: 'light',
-};
 
 export default class App extends Component {
   constructor(props) {
@@ -60,7 +51,7 @@ export default class App extends Component {
           screen: 'qiitaapp.FeedContainer',
           title: 'Feed',
           icon: rssIcon,
-          navigatorStyle,
+          navigatorStyle: WITH_NAVBAR_STYLE,
         },
         {
           label: 'Search',
@@ -73,7 +64,7 @@ export default class App extends Component {
         },
       ],
       tabsStyle: {
-        tabBarSelectedButtonColor: '#59BB0C',
+        tabBarSelectedButtonColor: PRIMARY_COLOR,
         tabBarBackgroundColor: 'white',
       },
     });

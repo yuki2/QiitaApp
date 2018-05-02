@@ -78,6 +78,16 @@ class QiitaApi {
     return this.authedFetch(createUrl(path, { page, per_page: perPage })).then(onFulfillPaging);
   };
 
+  fetchItemsByQuery = (
+    query: string,
+    page: number = 1,
+    perPage: number = 20,
+  ): Promise<PagingResponse> => {
+    const path: string = '/api/v2/items';
+    const url = createUrl(path, { query, page, per_page: perPage });
+    return this.authedFetch(url).then(onFulfillPaging);
+  };
+
   fetchAuthenticatedUser = (): Promise<JSON> => {
     const path = '/api/v2/authenticated_user';
     return this.authedFetch(createUrl(path)).then(onFulfill);

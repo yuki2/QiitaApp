@@ -40,7 +40,6 @@ class QiitaList extends Component<Props> {
     items: [],
     loading: true,
     onSelectItem: () => {},
-    onRefresh: () => {},
     onEndReached: () => {},
   };
 
@@ -52,6 +51,13 @@ class QiitaList extends Component<Props> {
     const {
       loading, items, onRefresh, onEndReached,
     } = this.props;
+    let refresh = {};
+    if (onRefresh) {
+      refresh = {
+        refreshing: loading,
+        onRefresh,
+      };
+    }
     return (
       <View style={styles.container}>
         <FlatList
@@ -61,10 +67,9 @@ class QiitaList extends Component<Props> {
           renderItem={this.renderItem}
           keyExtractor={item => item.id}
           ItemSeparatorComponent={separator}
-          refreshing={loading}
-          onRefresh={onRefresh}
           onEndReachedThreshold={0.5}
           onEndReached={info => onEndReached(info.distanceFromEnd, _.size(items))}
+          {...refresh}
         />
       </View>
     );
