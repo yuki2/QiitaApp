@@ -13,8 +13,8 @@ const icons = {
 };
 
 const iconsMap = {};
-const iconsLoaded = new Promise((resolve, reject) => {
-  Promise.all(
+const fetchIcons = () => {
+  return Promise.all(
     Object.keys(icons).map(iconName =>
       // IconName--suffix--other-suffix is just the mapping name in iconsMap
       Ionicons.getImageSource(
@@ -27,8 +27,8 @@ const iconsLoaded = new Promise((resolve, reject) => {
     Object.keys(icons).forEach((iconName, idx) => (iconsMap[iconName] = sources[idx]));
 
     // Call resolve (and we are done)
-    resolve(true);
+    return Promise.resolve(true);
   });
-});
+};
 
-export { iconsMap, iconsLoaded };
+export { iconsMap, fetchIcons };

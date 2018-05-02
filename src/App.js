@@ -6,11 +6,9 @@ import './ReactotronConfig';
 import registerScreens from './registerScreens';
 import configureStore from './configureStore';
 import { PRIMARY_COLOR } from './app/design';
-import { LoginStatus, startLoginQiita } from './app/modules/session';
-import { iconsMap, iconsLoaded } from './app/services/appIcons';
-
-import rssIcon from './assets/rss.png';
-import searchIcon from './assets/search.png';
+import { LoginStatus } from './app/modules/session';
+import { startInitializeApplication } from './app/modules/initialization';
+import { iconsMap } from './app/services/appIcons';
 
 const store = configureStore();
 registerScreens(store, Provider);
@@ -19,16 +17,16 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     store.subscribe(this.onStoreUpdate.bind(this));
-    iconsLoaded.then(() => {
-      store.dispatch(startLoginQiita(false));
-    });
+    store.dispatch(startInitializeApplication());
   }
 
   onStoreUpdate() {
-    const { loginStatus } = store.getState().session;
+    const { completed } = store.getState().initialization;
+    if (!completed) {
+      return;
+    }
 
-    // handle a root change
-    // if your app doesn't change roots in runtime, you can remove onStoreUpdate() altogether
+    const { loginStatus } = store.getState().session;
     if (this.loginStatus !== loginStatus) {
       this.loginStatus = loginStatus;
       this.startApp(loginStatus);

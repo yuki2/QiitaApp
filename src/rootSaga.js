@@ -3,6 +3,7 @@ import { subscribeFetchLatestItems } from './app/modules/tagFeed';
 import { subscribeOpenInAppBrowser } from './app/modules/inAppWebView';
 import { subscribeLoginQiita } from './app/modules/session';
 import { subscribeSearchItems } from './app/modules/search';
+import { subscribeIitializeApplication } from './app/modules/initialization';
 
 export default [
   subscribeFetchLatestFeed,
@@ -10,4 +11,5 @@ export default [
   subscribeLoginQiita,
   subscribeFetchLatestItems,
   subscribeSearchItems,
+  subscribeIitializeApplication,
 ];

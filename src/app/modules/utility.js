@@ -78,3 +78,8 @@ export function defaultReducer(state = {}, action = {}, actionType) {
       return state;
   }
 }
+
+export function pattern(filterAction) {
+  return action =>
+    action.type === filterAction.type && action.meta.status === filterAction.meta.status;
+}
