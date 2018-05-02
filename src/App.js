@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import './ReactotronConfig';
 import registerScreens from './registerScreens';
 import configureStore from './configureStore';
-import { PRIMARY_COLOR, WITH_NAVBAR_STYLE } from './app/design';
+import { PRIMARY_COLOR } from './app/design';
 import { LoginStatus, startLoginQiita } from './app/modules/session';
 
 import rssIcon from './assets/rss.png';
@@ -37,7 +37,9 @@ export default class App extends Component {
       screen: {
         screen: 'qiitaapp.LoginContainer',
         title: 'Welcome',
-        navigatorStyle: {},
+        navigatorStyle: {
+          navBarHidden: true,
+        },
         navigatorButtons: {},
       },
     });
