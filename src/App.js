@@ -46,14 +46,18 @@ export default class App {
     Navigation.startTabBasedApp({
       tabs: [
         {
+          label: 'Feed',
           screen: 'qiitaapp.FeedContainer',
+          title: 'Feed',
           icon: iconsMap['ios-paper-outline'],
           navigatorStyle: {
             navBarHidden: true,
           },
         },
         {
+          label: 'Search',
           screen: 'qiitaapp.SearchContainer',
+          title: 'Search',
           icon: iconsMap['ios-search-outline'],
           navigatorStyle: {
             navBarHidden: true,
