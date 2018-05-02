@@ -8,6 +8,7 @@ import {
   createCompleteAction,
   createAbortAction,
   defaultReducer,
+  pattern,
 } from './utility';
 
 const SEARCH_ITEMS = 'SEARCH_ITEMS';
@@ -60,8 +61,5 @@ function* fetchSearchItemsTask(action) {
 }
 
 export function* subscribeSearchItems() {
-  yield takeLatest((action) => {
-    const expected = startSearchItems();
-    return action.type === expected.type && action.meta.status === expected.meta.status;
-  }, fetchSearchItemsTask);
+  yield takeLatest(pattern(startSearchItems()), fetchSearchItemsTask);
 }

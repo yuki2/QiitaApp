@@ -4,7 +4,13 @@ import keyMirror from 'keymirror';
 import Config from 'react-native-config';
 import _ from 'lodash';
 
-import { Status, createStartAction, createCompleteAction, createAbortAction } from './utility';
+import {
+  Status,
+  createStartAction,
+  createCompleteAction,
+  createAbortAction,
+  pattern,
+} from './utility';
 import QiitaApi from '../services/QiitaApi';
 
 const oAuthSession = Platform.select({
@@ -20,7 +26,7 @@ export const LoginStatus = keyMirror({
   LOGGEDIN_AS_GUEST: null,
 });
 
-export function startLoginQiita(requiredUI) {
+export function startLoginQiita(requiredUI = true) {
   return createStartAction(LOGIN_QIITA, { requiredUI }, null);
 }
 
@@ -116,8 +122,5 @@ function* loginQiitaTask(action) {
 }
 
 export function* subscribeLoginQiita() {
-  yield takeLatest((action) => {
-    const expected = startLoginQiita();
-    return action.type === expected.type && action.meta.status === expected.meta.status;
-  }, loginQiitaTask);
+  yield takeLatest(pattern(startLoginQiita()), loginQiitaTask);
 }

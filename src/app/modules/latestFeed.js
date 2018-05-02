@@ -7,6 +7,7 @@ import {
   createCompleteAction,
   createAbortAction,
   defaultReducer,
+  pattern,
 } from './utility';
 
 const FETCH_LATEST_FEED = 'FETCH_LATEST_FEED';
@@ -48,8 +49,5 @@ function* fetchLatestFeedTask(action) {
 }
 
 export function* subscribeFetchLatestFeed() {
-  yield takeLatest((action) => {
-    const expected = startFetchLatestFeed();
-    return action.type === expected.type && action.meta.status === expected.meta.status;
-  }, fetchLatestFeedTask);
+  yield takeLatest(pattern(startFetchLatestFeed()), fetchLatestFeedTask);
 }
