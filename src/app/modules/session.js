@@ -14,10 +14,9 @@ const oAuthSession = Platform.select({
 const LOGIN_QIITA = 'LOGIN_QIITA';
 
 export const LoginStatus = keyMirror({
-  CHECKING: null,
-  NOT_LOGIN: null,
-  LOGIN: null,
-  GUEST_LOGIN: null,
+  NOT_LOGGEDIN: null,
+  LOGGEDIN_AS_USER: null,
+  LOGGEDIN_AS_GUEST: null,
 });
 
 export function startLoginQiita(requiredUI) {
@@ -37,7 +36,7 @@ export function abortLoginQiita(error) {
 }
 
 const initialState = {
-  loginStatus: LoginStatus.CHECKING,
+  loginStatus: LoginStatus.NOT_LOGGEDIN,
   myUser: {},
   error: {},
 };
@@ -56,7 +55,7 @@ export default function reducer(state = initialState, action = {}) {
         case Status.ABORT:
           return {
             myUser: {},
-            loginStatus: LoginStatus.NOT_LOGIN,
+            loginStatus: LoginStatus.NOT_LOGGEDIN,
             error: action.payload.error,
           };
         default:
@@ -106,7 +105,7 @@ function* loginQiitaTask(action) {
       QiitaApi.token = token;
     }
     const authenticatedUser = yield call(QiitaApi.fetchAuthenticatedUser);
-    yield put(completeLoginQiita(authenticatedUser, LoginStatus.LOGIN));
+    yield put(completeLoginQiita(authenticatedUser, LoginStatus.LOGGEDIN_AS_USER));
   } catch (e) {
     yield put(abortLoginQiita(e));
   }
