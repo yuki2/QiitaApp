@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
 import { connect } from 'react-redux';
 
 import type { QiitaItemsModel, QiitaItem } from '../flow-type';
@@ -16,8 +16,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statusBarSpace: {
-    height: 20,
-    backgroundColor: PRIMARY_COLOR,
+    ...Platform.select({
+      ios: {
+        height: 20,
+        backgroundColor: PRIMARY_COLOR,
+      },
+    }),
   },
 });
 

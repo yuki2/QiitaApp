@@ -1,9 +1,10 @@
 // @flow
 import React, { Component } from 'react';
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, Platform, View } from 'react-native';
 import { connect } from 'react-redux';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
 import type { QiitaItemsModel, QiitaUser, QiitaItem } from '../flow-type';
+import { PRIMARY_COLOR } from '../design';
 
 import { openInAppBrowser } from '../modules/inAppWebView';
 
@@ -18,7 +19,18 @@ const initialLayout = {
   width: Dimensions.get('window').width,
 };
 
-const tabStyles = StyleSheet.create({
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  statusBarSpace: {
+    ...Platform.select({
+      ios: {
+        height: 20,
+        backgroundColor: PRIMARY_COLOR,
+      },
+    }),
+  },
   tabBar: {
     backgroundColor: '#59BB0C',
   },
@@ -147,19 +159,22 @@ class FeedContainer extends Component<Props, State> {
 
   _handleIndexChange = (index: number) => this.setState({ index });
 
-  _renderHeader = props => <TabBar style={tabStyles.tabBar} {...props} />;
+  _renderHeader = props => <TabBar style={styles.tabBar} {...props} />;
 
   _renderScene = ({ index }) => this.adapter[index].render(this.props);
 
   render() {
     return (
-      <TabViewAnimated
-        navigationState={this.state}
-        renderScene={this._renderScene}
-        renderHeader={this._renderHeader}
-        onIndexChange={this._handleIndexChange}
-        initialLayout={initialLayout}
-      />
+      <View style={styles.container}>
+        <View style={styles.statusBarSpace} />
+        <TabViewAnimated
+          navigationState={this.state}
+          renderScene={this._renderScene}
+          renderHeader={this._renderHeader}
+          onIndexChange={this._handleIndexChange}
+          initialLayout={initialLayout}
+        />
+      </View>
     );
   }
 }

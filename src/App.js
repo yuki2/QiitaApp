@@ -51,7 +51,9 @@ export default class App extends Component {
           screen: 'qiitaapp.FeedContainer',
           title: 'Feed',
           icon: rssIcon,
-          navigatorStyle: WITH_NAVBAR_STYLE,
+          navigatorStyle: {
+            navBarHidden: true,
+          },
         },
         {
           label: 'Search',
