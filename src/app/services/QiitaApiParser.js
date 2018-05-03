@@ -30,6 +30,7 @@ export function parseItems(response: PagingResponse): QiitaItemsModel {
       user: parseUser(item.user),
       tags: item.tags,
       createdAt: new Date(item.created_at),
+      likesCount: item.likes_count,
     })),
   };
 }

@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import type { QiitaItem } from '../flow-type';
 
@@ -25,18 +26,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 4,
   },
-  name: {
+  subText: {
     fontSize: 12,
     marginLeft: 4,
     textAlign: 'left',
     color: 'gray',
   },
-  tag: {
-    fontSize: 12,
-    textAlign: 'left',
-    color: 'gray',
-    marginTop: 4,
-    marginBottom: 4,
+  tagsIcon: {
+    marginLeft: 8,
   },
   thumbnail: {
     width: 12,
@@ -56,6 +53,19 @@ export default class QiitaCell extends Component<Props> {
 
   createTag = (item: QiitaItem): string => item.tags.map(tag => tag.name).join(', ');
 
+  _renderLikesCount = (item: QiitaItem) => {
+    if (item.likesCount === 0) {
+      return null;
+    }
+
+    return (
+      <View style={styles.row}>
+        <Icon name="md-thumbs-up" size={12} color="gray" />
+        <Text style={[styles.subText, { marginRight: 8 }]}>{item.likesCount}</Text>
+      </View>
+    );
+  };
+
   render() {
     const { onSelect, item } = this.props;
     return (
@@ -63,10 +73,14 @@ export default class QiitaCell extends Component<Props> {
         <View style={styles.container}>
           <View style={styles.row}>
             <Image source={{ uri: item.user.profileImageUrl }} style={styles.thumbnail} />
-            <Text style={styles.name}>{item.user.id}</Text>
+            <Text style={styles.subText}>{item.user.id}</Text>
           </View>
           <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.tag}>{item.tags.map(tag => tag.name).join(', ')}</Text>
+          <View style={styles.row}>
+            {this._renderLikesCount(item)}
+            <Icon name="ios-pricetags" size={12} color="gray" />
+            <Text style={styles.subText}>{item.tags.map(tag => tag.name).join(', ')}</Text>
+          </View>
         </View>
       </TouchableHighlight>
     );

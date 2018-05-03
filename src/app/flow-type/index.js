@@ -23,6 +23,7 @@ export type QiitaItem = {
   user: QiitaUser,
   tags: Array<any>,
   createdAt: Date,
+  likesCount: number,
 };
 
 export type QiitaItemsModel = {
