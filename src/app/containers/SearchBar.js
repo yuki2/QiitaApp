@@ -34,6 +34,7 @@ export default class SearchContainer extends PureComponent<Props> {
           style={styles.textInput}
           onChangeText={this.props.onChangeText}
           placeholder="Search"
+          underlineColorAndroid="transparent"
         />
       </View>
     );
