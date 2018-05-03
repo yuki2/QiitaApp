@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-navigation';
 import type { QiitaItemsModel, QiitaUser, QiitaItem } from '../flow-type';
 import { PRIMARY_COLOR } from '../design';
 
-import { openInAppBrowser } from '../modules/inAppWebView';
+import { openInAppBrowser } from '../modules/inAppBrowser';
 
 import QiitaList from './QiitaList';
 import { startFetchLatestFeed } from '../modules/latestFeed';

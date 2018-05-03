@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-navigation';
 import type { QiitaItemsModel, QiitaItem } from '../flow-type';
 import { PRIMARY_COLOR } from '../design';
 import { startSearchItems } from '../modules/search';
-import { openInAppBrowser } from '../modules/inAppWebView';
+import { openInAppBrowser } from '../modules/inAppBrowser';
 
 import SearchBar from './SearchBar';
 import QiitaList from './QiitaList';

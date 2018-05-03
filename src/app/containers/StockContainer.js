@@ -8,7 +8,7 @@ import _ from 'lodash';
 import type { QiitaItemsModel, QiitaItem, QiitaUser } from '../flow-type';
 import { PRIMARY_COLOR } from '../design';
 import { startFetchStockItems } from '../modules/stockItems';
-import { openInAppBrowser } from '../modules/inAppWebView';
+import { openInAppBrowser } from '../modules/inAppBrowser';
 
 import QiitaList from './QiitaList';
 
