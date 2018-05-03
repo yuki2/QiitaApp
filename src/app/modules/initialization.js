@@ -1,6 +1,5 @@
 import { put, call, take, takeLatest } from 'redux-saga/effects';
 
-import { fetchIcons } from '../services/appIcons';
 import { startLoginQiita, completeLoginQiita, abortLoginQiita } from '../modules/session';
 
 import { createStartAction, createCompleteAction, Status, pattern } from './utility';
@@ -43,7 +42,6 @@ export default function reducer(state = initialState, action = {}) {
 
 function* initializeApplicationTask() {
   try {
-    yield call(fetchIcons);
     yield put(startLoginQiita(false));
     yield take([pattern(completeLoginQiita()), pattern(abortLoginQiita())]);
     yield put(completeInitializeApplication());

@@ -1,86 +1,52 @@
-import { Navigation } from 'react-native-navigation';
-import { Provider } from 'react-redux';
+// @flow
+import React, { Component } from 'react';
+import { Provider, connect } from 'react-redux';
+
+import { startInitializeApplication } from './app/modules/initialization';
 
 import './ReactotronConfig';
-import registerScreens from './registerScreens';
 import configureStore from './configureStore';
-import { PRIMARY_COLOR } from './app/design';
-import { LoginStatus } from './app/modules/session';
-import { startInitializeApplication } from './app/modules/initialization';
-import { iconsMap } from './app/services/appIcons';
+import { createRootNavigator } from './router';
+
+const mapStateToProps = state => ({
+  loginStatus: state.session.loginStatus,
+  completed: state.initialization.completed,
+});
+
+const mapDispatchToProps = dispatch => ({
+  initializeApplication: () => {
+    dispatch(startInitializeApplication());
+  },
+});
+
+type Props = {
+  initializeApplication: () => void,
+  completed: boolean,
+  loginStatus: any,
+};
+class App extends Component<Props> {
+  componentDidMount() {
+    const { initializeApplication } = this.props;
+    initializeApplication();
+  }
+
+  render() {
+    const { completed, loginStatus } = this.props;
+    if (!completed) {
+      return null;
+    }
+    const Layout = createRootNavigator(loginStatus);
+    return <Layout />;
+  }
+}
+
+const RootNavigationStack = connect(mapStateToProps, mapDispatchToProps)(App);
 
 const store = configureStore();
-registerScreens(store, Provider);
+const Root = () => (
+  <Provider store={store}>
+    <RootNavigationStack />
+  </Provider>
+);
 
-export default class App {
-  constructor() {
-    store.subscribe(this.onStoreUpdate.bind(this));
-    store.dispatch(startInitializeApplication());
-  }
-
-  onStoreUpdate() {
-    const { completed } = store.getState().initialization;
-    if (!completed) {
-      return;
-    }
-
-    const { loginStatus } = store.getState().session;
-    if (this.loginStatus !== loginStatus) {
-      this.loginStatus = loginStatus;
-      this.startApp(loginStatus);
-    }
-  }
-
-  startLogin = () => {
-    Navigation.startSingleScreenApp({
-      screen: {
-        screen: 'qiitaapp.LoginContainer',
-        navigatorStyle: {
-          navBarHidden: true,
-        },
-      },
-    });
-  };
-
-  startTabApp = () => {
-    Navigation.startTabBasedApp({
-      tabs: [
-        {
-          label: 'Feed',
-          screen: 'qiitaapp.FeedContainer',
-          title: 'Feed',
-          icon: iconsMap['ios-paper-outline'],
-          navigatorStyle: {
-            navBarHidden: true,
-          },
-        },
-        {
-          label: 'Search',
-          screen: 'qiitaapp.SearchContainer',
-          title: 'Search',
-          icon: iconsMap['ios-search-outline'],
-          navigatorStyle: {
-            navBarHidden: true,
-          },
-        },
-      ],
-      tabsStyle: {
-        tabBarSelectedButtonColor: PRIMARY_COLOR,
-        tabBarBackgroundColor: 'white',
-      },
-    });
-  };
-
-  startApp = (loginStatus) => {
-    switch (loginStatus) {
-      case LoginStatus.NOT_LOGGEDIN:
-        this.startLogin();
-        break;
-      case LoginStatus.LOGGEDIN_AS_USER:
-        this.startTabApp();
-        break;
-      default:
-        break;
-    }
-  };
-}
+export default Root;
