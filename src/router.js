@@ -1,6 +1,9 @@
 import React from 'react';
-import { Platform, StatusBar } from 'react-native';
-import { StackNavigator, TabNavigator, SwitchNavigator } from 'react-navigation';
+import {
+  createStackNavigator,
+  createBottomTabNavigator,
+  createSwitchNavigator,
+} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import FeedContainer from './app/containers/FeedContainer';
@@ -9,7 +12,7 @@ import LoginContainer from './app/containers/LoginContainer';
 import { PRIMARY_COLOR } from './app/design';
 import { LoginStatus } from './app/modules/session';
 
-export const Login = StackNavigator(
+export const Login = createStackNavigator(
   {
     Login: { screen: LoginContainer },
   },
@@ -18,7 +21,7 @@ export const Login = StackNavigator(
   },
 );
 
-export const Tab = TabNavigator(
+export const Tab = createBottomTabNavigator(
   {
     Feed: {
       screen: FeedContainer,
@@ -40,19 +43,14 @@ export const Tab = TabNavigator(
     },
   },
   {
-    tabBarPosition: 'bottom',
     tabBarOptions: {
       activeTintColor: PRIMARY_COLOR,
-      showIcon: true,
-      style: {
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-      },
     },
   },
 );
 
 export const createRootNavigator = (loginStatus = false) =>
-  SwitchNavigator(
+  createSwitchNavigator(
     {
       Login: {
         screen: Login,

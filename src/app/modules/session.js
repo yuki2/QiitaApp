@@ -101,7 +101,6 @@ function* loginQiitaTask(action) {
     const authenticatedUser = yield call(QiitaApi.fetchAuthenticatedUser);
     yield put(completeLoginQiita(authenticatedUser, LoginStatus.LOGGEDIN_AS_USER));
   } catch (e) {
-    console.log(e);
     yield put(abortLoginQiita(e));
   }
 }
