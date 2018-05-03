@@ -1,8 +1,10 @@
 // @flow
 import React, { Component } from 'react';
-import { StyleSheet, Dimensions, Platform, View } from 'react-native';
+import { StyleSheet, Dimensions, View } from 'react-native';
 import { connect } from 'react-redux';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
+import { SafeAreaView } from 'react-navigation';
+
 import type { QiitaItemsModel, QiitaUser, QiitaItem } from '../flow-type';
 import { PRIMARY_COLOR } from '../design';
 
@@ -22,17 +24,14 @@ const initialLayout = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: PRIMARY_COLOR,
   },
-  statusBarSpace: {
-    ...Platform.select({
-      ios: {
-        height: 20,
-        backgroundColor: PRIMARY_COLOR,
-      },
-    }),
+  listContainer: {
+    flex: 1,
+    backgroundColor: 'white',
   },
   tabBar: {
-    backgroundColor: '#59BB0C',
+    backgroundColor: PRIMARY_COLOR,
   },
 });
 
@@ -109,13 +108,15 @@ class FeedContainer extends Component<Props, State> {
         const { latestFeed } = props;
         const { model, loading } = latestFeed;
         return (
-          <QiitaList
-            items={model.items}
-            loading={loading}
-            onSelectItem={this._onSelectItem}
-            onRefresh={this._onRefresh}
-            onEndReached={this._onEndReached}
-          />
+          <View style={styles.listContainer}>
+            <QiitaList
+              items={model.items}
+              loading={loading}
+              onSelectItem={this._onSelectItem}
+              onRefresh={this._onRefresh}
+              onEndReached={this._onEndReached}
+            />
+          </View>
         );
       },
     },
@@ -128,12 +129,14 @@ class FeedContainer extends Component<Props, State> {
         const { tagFeed } = props;
         const { model, loading } = tagFeed;
         return (
-          <QiitaList
-            items={model.items}
-            loading={loading}
-            onRefresh={this._onRefresh}
-            onSelectItem={this._onSelectItem}
-          />
+          <View style={styles.listContainer}>
+            <QiitaList
+              items={model.items}
+              loading={loading}
+              onRefresh={this._onRefresh}
+              onSelectItem={this._onSelectItem}
+            />
+          </View>
         );
       },
     },
@@ -165,8 +168,7 @@ class FeedContainer extends Component<Props, State> {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.statusBarSpace} />
+      <SafeAreaView style={styles.container}>
         <TabViewAnimated
           navigationState={this.state}
           renderScene={this._renderScene}
@@ -174,7 +176,7 @@ class FeedContainer extends Component<Props, State> {
           onIndexChange={this._handleIndexChange}
           initialLayout={initialLayout}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 }

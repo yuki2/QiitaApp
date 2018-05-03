@@ -1,7 +1,8 @@
 // @flow
 import React, { Component } from 'react';
-import { StyleSheet, View, Platform } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
+import { SafeAreaView } from 'react-navigation';
 
 import type { QiitaItemsModel, QiitaItem } from '../flow-type';
 import { PRIMARY_COLOR } from '../design';
@@ -14,14 +15,11 @@ import QiitaList from './QiitaList';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: PRIMARY_COLOR,
   },
-  statusBarSpace: {
-    ...Platform.select({
-      ios: {
-        height: 20,
-        backgroundColor: PRIMARY_COLOR,
-      },
-    }),
+  searchContainer: {
+    flex: 1,
+    backgroundColor: 'white',
   },
 });
 
@@ -59,11 +57,12 @@ class SearchContainer extends Component<Props> {
     const { search } = this.props;
     const { loading, model } = search;
     return (
-      <View style={styles.container}>
-        <View style={styles.statusBarSpace} />
-        <SearchBar onChangeText={this._onChangeText} />
-        <QiitaList items={model.items} loading={loading} onSelectItem={this._onSelectItem} />
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.searchContainer}>
+          <SearchBar onChangeText={this._onChangeText} />
+          <QiitaList items={model.items} loading={loading} onSelectItem={this._onSelectItem} />
+        </View>
+      </SafeAreaView>
     );
   }
 }

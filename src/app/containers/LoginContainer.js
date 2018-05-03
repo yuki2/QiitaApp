@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+import { SafeAreaView } from 'react-navigation';
 
 import { PRIMARY_COLOR } from '../design';
 import { startLoginQiita } from '../modules/session';
@@ -62,7 +63,7 @@ export class Login extends PureComponent<Props> {
   render = () => {
     const { onLoginPress, loginButtonDisable } = this.props;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>QiitaApp</Text>
         </View>
@@ -73,7 +74,7 @@ export class Login extends PureComponent<Props> {
         >
           <Text style={styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
-      </View>
+      </SafeAreaView>
     );
   };
 }
