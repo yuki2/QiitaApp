@@ -74,8 +74,8 @@ class FeedContainer extends Component<Props, State> {
     fetchLastestFeed: () => {},
     fetchTagFeed: () => {},
     openInAppBrowserByUrl: () => {},
-    latestFeed: { loading: true, model: { items: [] } },
-    tagFeed: { loading: true, model: { items: [] } },
+    latestFeed: { loading: false, model: { items: [] } },
+    tagFeed: { loading: false, model: { items: [] } },
     myUser: {},
   };
 
