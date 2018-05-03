@@ -5,6 +5,7 @@ import tagFeed from './app/modules/tagFeed';
 import session from './app/modules/session';
 import search from './app/modules/search';
 import initialization from './app/modules/initialization';
+import stockItems from './app/modules/stockItems';
 
 const rootReducer = combineReducers({
   latestFeed,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   session,
   search,
   initialization,
+  stockItems,
 });
 
 export default rootReducer;

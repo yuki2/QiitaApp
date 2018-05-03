@@ -118,6 +118,16 @@ class QiitaApi {
     const url = createUrl(path, { page, per_page: perPage });
     return this.authedFetch(url).then(onFulfillPaging);
   };
+
+  fetchStockItems = (
+    userId: string,
+    page: number = 1,
+    perPage: number = 20,
+  ): Promise<PagingResponse> => {
+    const path = `/api/v2/users/${userId}/stocks`;
+    const url = createUrl(path, { page, per_page: perPage });
+    return this.authedFetch(url).then(onFulfillPaging);
+  };
 }
 
 export default new QiitaApi();
