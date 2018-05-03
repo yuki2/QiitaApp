@@ -1,4 +1,4 @@
-import { Platform, NativeModules, AsyncStorage } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import { put, call, takeLatest } from 'redux-saga/effects';
 import keyMirror from 'keymirror';
 import Config from 'react-native-config';
@@ -12,10 +12,6 @@ import {
   pattern,
 } from './utility';
 import QiitaApi from '../services/QiitaApi';
-
-const oAuthSession = Platform.select({
-  ios: NativeModules.OAuthSession,
-});
 
 const LOGIN_QIITA = 'LOGIN_QIITA';
 
@@ -85,13 +81,6 @@ function setSession(sessionModel) {
   return AsyncStorage.setItem('session', JSON.stringify(sessionModel));
 }
 
-function fetchAccessToken(code) {
-  return QiitaApi.fetchAccessToken(Config.CLIENT_ID, Config.CLIENT_SECRET, code);
-}
-
-const AUTH_URL = 'https://qiita.com/api/v2/oauth/authorize';
-const SCOPES = ['read_qiita'];
-
 function* loginQiitaTask(action) {
   try {
     const { requiredUI } = action.payload;
@@ -101,13 +90,8 @@ function* loginQiitaTask(action) {
         console.error('You must define CLIENT_ID and CLIENT_SECRET at .env file');
         return; // TODO throw
       }
-      const { code } = yield call(oAuthSession.start, {
-        url: AUTH_URL,
-        clientId: Config.CLIENT_ID,
-        scopes: SCOPES,
-        schema: Config.SCHEMA,
-      });
-      const { token } = yield call(fetchAccessToken, code);
+      const { code } = yield call(QiitaApi.fetchCode);
+      const { token } = yield call(QiitaApi.fetchAccessToken, code);
       yield call(setSession, { token });
       QiitaApi.token = token;
     } else {
@@ -117,6 +101,7 @@ function* loginQiitaTask(action) {
     const authenticatedUser = yield call(QiitaApi.fetchAuthenticatedUser);
     yield put(completeLoginQiita(authenticatedUser, LoginStatus.LOGGEDIN_AS_USER));
   } catch (e) {
+    console.log(e);
     yield put(abortLoginQiita(e));
   }
 }

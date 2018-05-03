@@ -1,9 +1,15 @@
 // @flow
 import _ from 'lodash';
+import { Platform } from 'react-native';
+import Config from 'react-native-config';
 
 import type { PagingResponse } from '../flow-type';
 
+import { nativeFetchCode, fetchCodeByBrowser } from './OAuthSession';
+
 const BASE_URL = 'https://qiita.com';
+const SCOPES = ['read_qiita'];
+const { CLIENT_ID, CLIENT_SECRET, SCHEMA } = Config;
 
 const createUrl = (path: string, params: any = {}) => {
   if (_.isEmpty(params)) {
@@ -53,9 +59,19 @@ class QiitaApi {
     });
   };
 
-  fetchAccessToken = (clientId: string, clientSecret: string, code: string): Promise<JSON> => {
+  fetchCode = () => {
+    const path = '/api/v2/oauth/authorize';
+    if (Platform.OS === 'ios') {
+      return nativeFetchCode(BASE_URL + path, CLIENT_ID, SCOPES, SCHEMA);
+    } else if (Platform.OS === 'android') {
+      return fetchCodeByBrowser(BASE_URL + path, CLIENT_ID, SCOPES);
+    }
+    throw new Error('unknown OS');
+  };
+
+  fetchAccessToken = (code: string): Promise<JSON> => {
     const method = 'POST';
-    const body = JSON.stringify({ client_id: clientId, client_secret: clientSecret, code });
+    const body = JSON.stringify({ client_id: CLIENT_ID, client_secret: CLIENT_SECRET, code });
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',

@@ -20,19 +20,19 @@ export const Login = StackNavigator(
 
 export const Tab = TabNavigator(
   {
-    Home: {
+    Feed: {
       screen: FeedContainer,
       navigationOptions: {
-        tabBarLabel: 'Home',
+        tabBarLabel: 'Feed',
         tabBarIcon: ({ tintColor }) => (
           <Icon name="ios-paper-outline" size={30} color={tintColor} />
         ),
       },
     },
-    Profile: {
+    Search: {
       screen: SearchContainer,
       navigationOptions: {
-        tabBarLabel: 'Profile',
+        tabBarLabel: 'Search',
         tabBarIcon: ({ tintColor }) => (
           <Icon name="ios-search-outline" size={30} color={tintColor} />
         ),
@@ -40,8 +40,10 @@ export const Tab = TabNavigator(
     },
   },
   {
+    tabBarPosition: 'bottom',
     tabBarOptions: {
       activeTintColor: PRIMARY_COLOR,
+      showIcon: true,
       style: {
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
       },
