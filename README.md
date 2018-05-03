@@ -1,6 +1,10 @@
 # qiitaapp
 Qiita Viewer - React Native
 
+|Android|iOS|
+|---|---|
+|![](https://user-images.githubusercontent.com/4437236/39584734-1a6e04d4-4f2e-11e8-923d-3a4e6beb03bd.gif)|![](https://user-images.githubusercontent.com/4437236/39584903-8115a7c8-4f2e-11e8-8972-fbb136a7ade9.png)|
+
 ### What's included
 | Name             | Description   |
 | :-------------:|--------------|
