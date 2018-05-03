@@ -1,4 +1,5 @@
-import React from 'react';
+// @flow
+import * as React from 'react';
 import {
   createStackNavigator,
   createBottomTabNavigator,
@@ -21,24 +22,30 @@ export const Login = createStackNavigator(
   },
 );
 
+type TabBarIconProps = {
+  tintColor: string,
+};
+const FeedTabBarIcon = ({ tintColor }: TabBarIconProps): React.Element<any> => (
+  <Icon name="ios-paper-outline" size={30} color={tintColor} />
+);
+const SearchTabBarIcon = ({ tintColor }: TabBarIconProps): React.Element<any> => (
+  <Icon name="ios-search-outline" size={30} color={tintColor} />
+);
+
 export const Tab = createBottomTabNavigator(
   {
     Feed: {
       screen: FeedContainer,
       navigationOptions: {
         tabBarLabel: 'Feed',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-paper-outline" size={30} color={tintColor} />
-        ),
+        tabBarIcon: FeedTabBarIcon,
       },
     },
     Search: {
       screen: SearchContainer,
       navigationOptions: {
         tabBarLabel: 'Search',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-search-outline" size={30} color={tintColor} />
-        ),
+        tabBarIcon: SearchTabBarIcon,
       },
     },
   },
@@ -49,7 +56,7 @@ export const Tab = createBottomTabNavigator(
   },
 );
 
-export const createRootNavigator = (loginStatus = false) =>
+export const createRootNavigator = (loginStatus: string) =>
   createSwitchNavigator(
     {
       Login: {
