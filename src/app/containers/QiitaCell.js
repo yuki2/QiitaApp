@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import moment from 'moment';
 
 import type { QiitaItem } from '../flow-type';
 
@@ -10,6 +11,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     paddingLeft: 8,
+    paddingRight: 8,
   },
   row: {
     flexDirection: 'row',
@@ -28,8 +30,15 @@ const styles = StyleSheet.create({
   },
   subText: {
     fontSize: 12,
-    marginLeft: 4,
     textAlign: 'left',
+    marginLeft: 4,
+    color: 'gray',
+  },
+  dateText: {
+    flex: 1,
+    fontSize: 12,
+    textAlign: 'right',
+    marginLeft: 4,
     color: 'gray',
   },
   tagsIcon: {
@@ -74,6 +83,7 @@ export default class QiitaCell extends Component<Props> {
           <View style={styles.row}>
             <Image source={{ uri: item.user.profileImageUrl }} style={styles.thumbnail} />
             <Text style={styles.subText}>{item.user.id}</Text>
+            <Text style={styles.dateText}>{moment(item.createdAt).fromNow()}</Text>
           </View>
           <Text style={styles.title}>{item.title}</Text>
           <View style={styles.row}>
