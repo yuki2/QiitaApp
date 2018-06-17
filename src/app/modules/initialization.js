@@ -1,8 +1,6 @@
-import { put, call, take, takeLatest } from 'redux-saga/effects';
-
-import { startLoginQiita, completeLoginQiita, abortLoginQiita } from '../modules/session';
-
-import { createStartAction, createCompleteAction, Status, pattern } from './utility';
+import { put, take, takeLatest } from 'redux-saga/effects';
+import { abortLoginQiita, completeLoginQiita, startLoginQiita } from '../modules/session';
+import { createCompleteAction, createStartAction, pattern, Status } from './utility';
 
 const INITIALIZE_APPLICATION = 'INITIALIZE_APPLICATION';
 

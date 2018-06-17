@@ -1,17 +1,16 @@
-import { AsyncStorage } from 'react-native';
-import { put, call, takeLatest } from 'redux-saga/effects';
 import keyMirror from 'keymirror';
-import Config from 'react-native-config';
 import _ from 'lodash';
-
-import {
-  Status,
-  createStartAction,
-  createCompleteAction,
-  createAbortAction,
-  pattern,
-} from './utility';
+import { AsyncStorage } from 'react-native';
+import Config from 'react-native-config';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import QiitaApi from '../services/QiitaApi';
+import {
+  createAbortAction,
+  createCompleteAction,
+  createStartAction,
+  pattern,
+  Status,
+} from './utility';
 
 const LOGIN_QIITA = 'LOGIN_QIITA';
 

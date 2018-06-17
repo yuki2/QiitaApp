@@ -1,11 +1,10 @@
-import { put, call, takeLatest } from 'redux-saga/effects';
-
+import { call, put, takeLatest } from 'redux-saga/effects';
 import QiitaApi from '../services/QiitaApi';
 import { parseItems } from '../services/QiitaApiParser';
 import {
-  createStartAction,
-  createCompleteAction,
   createAbortAction,
+  createCompleteAction,
+  createStartAction,
   defaultReducer,
   pattern,
 } from './utility';
