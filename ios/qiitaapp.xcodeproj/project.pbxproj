@@ -302,13 +302,6 @@
 			remoteGlobalIDString = EB2648DF1C7BE17A00B8F155;
 			remoteInfo = ReactNativeConfig;
 		};
-		5B460106209A0512003B010C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1413590E7DF74DB2A2925862 /* RNGestureHandler.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RNGestureHandler;
-		};
 		5B460109209A0512003B010C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FB22BD57014345D7B7B47E52 /* RNVectorIcons.xcodeproj */;
@@ -374,7 +367,6 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = qiitaapp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = qiitaapp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = qiitaapp/main.m; sourceTree = "<group>"; };
-		1413590E7DF74DB2A2925862 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		1FF424FCAFCA484EB066182C /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* qiitaapp-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "qiitaapp-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -613,14 +605,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5B460103209A0512003B010C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5B460107209A0512003B010C /* libRNGestureHandler.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		5B6B85582094B98200426178 /* InAppBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -691,7 +675,6 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				B76136035D1043B59491DE39 /* ReactNativeConfig.xcodeproj */,
-				1413590E7DF74DB2A2925862 /* RNGestureHandler.xcodeproj */,
 				FB22BD57014345D7B7B47E52 /* RNVectorIcons.xcodeproj */,
 			);
 			name = Libraries;
@@ -904,10 +887,6 @@
 				{
 					ProductGroup = 5B46007F20995A08003B010C /* Products */;
 					ProjectRef = B76136035D1043B59491DE39 /* ReactNativeConfig.xcodeproj */;
-				},
-				{
-					ProductGroup = 5B460103209A0512003B010C /* Products */;
-					ProjectRef = 1413590E7DF74DB2A2925862 /* RNGestureHandler.xcodeproj */;
 				},
 				{
 					ProductGroup = 5B460101209A0512003B010C /* Products */;
@@ -1154,13 +1133,6 @@
 			fileType = archive.ar;
 			path = libReactNativeConfig.a;
 			remoteRef = 5B46008220995A08003B010C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		5B460107209A0512003B010C /* libRNGestureHandler.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNGestureHandler.a;
-			remoteRef = 5B460106209A0512003B010C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		5B46010A209A0512003B010C /* libRNVectorIcons.a */ = {
@@ -1419,6 +1391,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuki.qiitaapp;
 				PRODUCT_NAME = qiitaapp;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1443,6 +1416,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuki.qiitaapp;
 				PRODUCT_NAME = qiitaapp;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1612,7 +1586,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1647,7 +1621,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

@@ -21,7 +21,6 @@ RCT_EXPORT_METHOD(start:(NSDictionary *)args resolver:(RCTPromiseResolveBlock)re
   NSString *url = args[@"url"];
   NSString *clientId = args[@"clientId"];
   NSArray *scopes = args[@"scopes"];
-  NSString *schema = args[@"schema"];
   
   NSString *state = [[NSUUID UUID] UUIDString];
   NSString *scope = [scopes componentsJoinedByString:@" "];
@@ -32,7 +31,7 @@ RCT_EXPORT_METHOD(start:(NSDictionary *)args resolver:(RCTPromiseResolveBlock)re
   NSURLComponents *components = [[NSURLComponents alloc] initWithString:url];
   components.queryItems = queryItems;
   
-  self.session = [[SFAuthenticationSession alloc] initWithURL:[components URL] callbackURLScheme:schema completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
+  self.session = [[SFAuthenticationSession alloc] initWithURL:[components URL] callbackURLScheme:@"qiitaapp" completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
     if(error != nil) {
       reject([NSString stringWithFormat:@"%ld", error.code], error.description, error);
       return;
