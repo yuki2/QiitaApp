@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
   createBottomTabNavigator,
@@ -57,6 +58,11 @@ export const FeedTopTab = createMaterialTopTabNavigator(
     tabBarOptions: {
       style: {
         backgroundColor: PRIMARY_COLOR,
+        ...Platform.select({
+          ios: {
+            paddingTop: 20,
+          },
+        }),
       },
     },
   },
