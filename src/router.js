@@ -1,16 +1,18 @@
 // @flow
 import * as React from 'react';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
-  createStackNavigator,
   createBottomTabNavigator,
+  createMaterialTopTabNavigator,
+  createStackNavigator,
   createSwitchNavigator,
 } from 'react-navigation';
-import Icon from 'react-native-vector-icons/Ionicons';
 
-import FeedContainer from './app/containers/FeedContainer';
-import SearchContainer from './app/containers/SearchContainer';
+import LatestFeedContainer from './app/containers/LatestFeedContainer';
 import LoginContainer from './app/containers/LoginContainer';
+import SearchContainer from './app/containers/SearchContainer';
 import StockContainer from './app/containers/StockContainer';
+import TagFeedContainer from './app/containers/TagFeedContainer';
 import { PRIMARY_COLOR } from './app/design';
 import { LoginStatus } from './app/modules/session';
 
@@ -36,10 +38,34 @@ const SearchTabBarIcon = ({ tintColor }: TabBarIconProps): React.Element<any> =>
   <Icon name="ios-search-outline" size={30} color={tintColor} />
 );
 
+export const FeedTopTab = createMaterialTopTabNavigator(
+  {
+    Latest: {
+      screen: LatestFeedContainer,
+      navigationOptions: {
+        tabBarLabel: 'Latest',
+      },
+    },
+    TagFeed: {
+      screen: TagFeedContainer,
+      navigationOptions: {
+        tabBarLabel: 'TagFeed',
+      },
+    },
+  },
+  {
+    tabBarOptions: {
+      style: {
+        backgroundColor: PRIMARY_COLOR,
+      },
+    },
+  },
+);
+
 export const Tab = createBottomTabNavigator(
   {
     Feed: {
-      screen: FeedContainer,
+      screen: FeedTopTab,
       navigationOptions: {
         tabBarLabel: 'Feed',
         tabBarIcon: FeedTabBarIcon,
