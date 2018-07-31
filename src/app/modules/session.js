@@ -17,7 +17,9 @@ export const LoginStatus = keyMirror({
   LOGGEDIN_AS_GUEST: null,
 });
 
-export const login = createAction(LOGIN, (requiredUI = true) => ({ requiredUI }));
+export const login = createAction(LOGIN, (requiredUI = true) => ({
+  requiredUI,
+}));
 
 export const loggedIn = createAction(LOGGED_IN, (myUser, loginStatus) => ({
   myUser,
@@ -38,6 +40,7 @@ export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOGIN:
       return {
+        ...state,
         loading: true,
       };
     case LOGGED_IN:
