@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import { PRIMARY_COLOR } from '../design';
 import { openInAppBrowser } from '../modules/inAppBrowser';
-import { startFetchLatestFeed } from '../modules/latestFeed';
+import { fetchLatestFeed } from '../modules/latestFeed';
 import QiitaList from './QiitaList';
 
 import type { QiitaItemsModel, QiitaItem } from '../flow-type';
@@ -31,8 +31,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchLastestFeed: (page, perPage, refresh) => {
-    dispatch(startFetchLatestFeed(page, perPage, refresh));
+  fetchLatestFeedWithPage: (page, perPage, refresh) => {
+    dispatch(fetchLatestFeed(page, perPage, refresh));
   },
   openInAppBrowserByUrl: (url) => {
     dispatch(openInAppBrowser(url));
@@ -40,7 +40,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 type Props = {
-  fetchLastestFeed: (page: number, perPage: number, refresh: boolean) => void,
+  fetchLatestFeedWithPage: (page: number, perPage: number, refresh: boolean) => void,
   openInAppBrowserByUrl: (url: string) => void,
   latestFeed: { loading: boolean, model: QiitaItemsModel },
 };
@@ -56,8 +56,8 @@ class LatestFeedContainer extends Component<Props> {
   }
 
   _fetchItems = (page: number, refresh: boolean) => {
-    const { fetchLastestFeed } = this.props;
-    fetchLastestFeed(page, PER_PAGE, refresh);
+    const { fetchLatestFeedWithPage } = this.props;
+    fetchLatestFeedWithPage(page, PER_PAGE, refresh);
   };
 
   _onRefresh = () => {
