@@ -1,7 +1,6 @@
 import { createAction } from 'redux-actions';
 import { put, take, takeLatest } from 'redux-saga/effects';
-import { abortLoginQiita, completeLoginQiita, startLoginQiita } from '../modules/session';
-import { pattern } from './utility';
+import { login, LOGGED_IN, LOGGED_OUT } from '../modules/session';
 
 const INITIALIZE_APPLICATION = 'INITIALIZE_APPLICATION';
 const INITIALIZED_APPLICATION = 'INITIALIZED_APPLICATION';
@@ -27,8 +26,8 @@ export default function reducer(state = initialState, action = {}) {
 
 function* initializeApplicationTask() {
   try {
-    yield put(startLoginQiita(false));
-    yield take([pattern(completeLoginQiita()), pattern(abortLoginQiita())]);
+    yield put(login(false));
+    yield take([LOGGED_IN, LOGGED_OUT]);
     yield put(initializedApplication());
   } catch (e) {
     yield put(initializedApplication());

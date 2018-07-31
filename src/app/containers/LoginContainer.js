@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-navigation';
 
 import { PRIMARY_COLOR } from '../design';
-import { startLoginQiita } from '../modules/session';
+import { login } from '../modules/session';
 
 const styles = StyleSheet.create({
   container: {
@@ -51,7 +51,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onLoginPress: () => {
-    dispatch(startLoginQiita(true));
+    dispatch(login(true));
   },
 });
 

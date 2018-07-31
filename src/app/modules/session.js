@@ -2,17 +2,13 @@ import keyMirror from 'keymirror';
 import _ from 'lodash';
 import { AsyncStorage } from 'react-native';
 import Config from 'react-native-config';
+import { createAction } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import QiitaApi from '../services/QiitaApi';
-import {
-  createAbortAction,
-  createCompleteAction,
-  createStartAction,
-  pattern,
-  Status,
-} from './utility';
 
-const LOGIN_QIITA = 'LOGIN_QIITA';
+export const LOGIN = 'LOGIN';
+export const LOGGED_IN = 'LOGGED_IN';
+export const LOGGED_OUT = 'LOGGED_OUT';
 
 export const LoginStatus = keyMirror({
   UNKNOWN: null,
@@ -21,52 +17,41 @@ export const LoginStatus = keyMirror({
   LOGGEDIN_AS_GUEST: null,
 });
 
-export function startLoginQiita(requiredUI = true) {
-  return createStartAction(LOGIN_QIITA, { requiredUI }, null);
-}
+export const login = createAction(LOGIN, (requiredUI = true) => ({ requiredUI }));
 
-export function completeLoginQiita(myUser, loginStatus) {
-  return createCompleteAction(LOGIN_QIITA, { myUser, loginStatus }, null);
-}
+export const loggedIn = createAction(LOGGED_IN, (myUser, loginStatus) => ({
+  myUser,
+  loginStatus,
+}));
 
-export function abortLoginQiita(error) {
-  return createAbortAction(LOGIN_QIITA, { error }, null);
-}
+export const loggedOut = createAction(LOGGED_OUT, () => ({
+  loginStatus: LoginStatus.NOT_LOGGEDIN,
+}));
 
 const initialState = {
   loading: false,
   loginStatus: LoginStatus.UNKNOWN,
   myUser: {},
-  error: {},
 };
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case LOGIN_QIITA:
-      switch (action.meta.status) {
-        case Status.PROCESSING:
-          return {
-            ...state,
-            loading: true,
-          };
-        case Status.COMPLETE:
-          return {
-            ...state,
-            myUser: action.payload.myUser,
-            loginStatus: action.payload.loginStatus,
-            loading: false,
-            error: {},
-          };
-        case Status.ABORT:
-          return {
-            myUser: {},
-            loginStatus: LoginStatus.NOT_LOGGEDIN,
-            loading: false,
-            error: action.payload.error,
-          };
-        default:
-          return state;
-      }
+    case LOGIN:
+      return {
+        loading: true,
+      };
+    case LOGGED_IN:
+      return {
+        myUser: action.payload.myUser,
+        loginStatus: action.payload.loginStatus,
+        loading: false,
+      };
+    case LOGGED_OUT:
+      return {
+        myUser: {},
+        loginStatus: action.payload.loginStatus,
+        loading: false,
+      };
     default:
       return state;
   }
@@ -98,12 +83,12 @@ function* loginQiitaTask(action) {
       QiitaApi.token = token;
     }
     const authenticatedUser = yield call(QiitaApi.fetchAuthenticatedUser);
-    yield put(completeLoginQiita(authenticatedUser, LoginStatus.LOGGEDIN_AS_USER));
+    yield put(loggedIn(authenticatedUser, LoginStatus.LOGGEDIN_AS_USER));
   } catch (e) {
-    yield put(abortLoginQiita(e));
+    yield put(loggedOut());
   }
 }
 
 export function* subscribeLoginQiita() {
-  yield takeLatest(pattern(startLoginQiita()), loginQiitaTask);
+  yield takeLatest(LOGIN, loginQiitaTask);
 }
