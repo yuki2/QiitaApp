@@ -1,16 +1,12 @@
 import { NativeModules } from 'react-native';
+import { createAction } from 'redux-actions';
 import { call, takeLatest } from 'redux-saga/effects';
 
 const inAppBrowser = NativeModules.InAppBrowser;
 
 const OPEN_IN_APP_BROWSER = 'OPEN_IN_APP_BROWSER';
 
-export function openInAppBrowser(url) {
-  return {
-    type: OPEN_IN_APP_BROWSER,
-    payload: { url },
-  };
-}
+const openInAppBrowser = createAction(OPEN_IN_APP_BROWSER, url => ({ url }));
 
 function* openInAppBrowserTask(action) {
   try {
@@ -21,6 +17,8 @@ function* openInAppBrowserTask(action) {
   }
 }
 
-export function* subscribeOpenInAppBrowser() {
+function* subscribeOpenInAppBrowser() {
   yield takeLatest(OPEN_IN_APP_BROWSER, openInAppBrowserTask);
 }
+
+export { openInAppBrowser, subscribeOpenInAppBrowser };
