@@ -1,16 +1,14 @@
+import { createAction } from 'redux-actions';
 import { put, take, takeLatest } from 'redux-saga/effects';
 import { abortLoginQiita, completeLoginQiita, startLoginQiita } from '../modules/session';
-import { createCompleteAction, createStartAction, pattern, Status } from './utility';
+import { pattern } from './utility';
 
 const INITIALIZE_APPLICATION = 'INITIALIZE_APPLICATION';
+const INITIALIZED_APPLICATION = 'INITIALIZED_APPLICATION';
 
-export function startInitializeApplication() {
-  return createStartAction(INITIALIZE_APPLICATION, null, null);
-}
+export const initializeApplication = createAction(INITIALIZE_APPLICATION);
 
-export function completeInitializeApplication() {
-  return createCompleteAction(INITIALIZE_APPLICATION, null, null);
-}
+export const initializedApplication = createAction(INITIALIZED_APPLICATION);
 
 const initialState = {
   completed: false,
@@ -19,20 +17,9 @@ const initialState = {
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case INITIALIZE_APPLICATION:
-      switch (action.meta.status) {
-        case Status.PROCESSING:
-          return {
-            ...state,
-            completed: false,
-          };
-        case Status.COMPLETE:
-          return {
-            ...state,
-            completed: true,
-          };
-        default:
-          return state;
-      }
+      return { completed: false };
+    case INITIALIZED_APPLICATION:
+      return { completed: true };
     default:
       return state;
   }
@@ -42,12 +29,12 @@ function* initializeApplicationTask() {
   try {
     yield put(startLoginQiita(false));
     yield take([pattern(completeLoginQiita()), pattern(abortLoginQiita())]);
-    yield put(completeInitializeApplication());
+    yield put(initializedApplication());
   } catch (e) {
-    yield put(completeInitializeApplication());
+    yield put(initializedApplication());
   }
 }
 
 export function* subscribeIitializeApplication() {
-  yield takeLatest(pattern(startInitializeApplication()), initializeApplicationTask);
+  yield takeLatest(INITIALIZE_APPLICATION, initializeApplicationTask);
 }

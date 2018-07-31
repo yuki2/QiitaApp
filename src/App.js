@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Provider, connect } from 'react-redux';
 
-import { startInitializeApplication } from './app/modules/initialization';
+import { initializeApplication } from './app/modules/initialization';
 
 import './ReactotronConfig';
 import configureStore from './configureStore';
@@ -14,20 +14,20 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  initializeApplication: () => {
-    dispatch(startInitializeApplication());
+  initializeApp: () => {
+    dispatch(initializeApplication());
   },
 });
 
 type Props = {
-  initializeApplication: () => void,
+  initializeApp: () => void,
   completed: boolean,
   loginStatus: any,
 };
 class App extends Component<Props> {
   componentDidMount() {
-    const { initializeApplication } = this.props;
-    initializeApplication();
+    const { initializeApp } = this.props;
+    initializeApp();
   }
 
   render() {
