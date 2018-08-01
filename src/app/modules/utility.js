@@ -17,6 +17,36 @@ export function uniqueItems(items) {
 }
 /* eslint-disable prefer-const */
 
+export const createDefaultReducer = (startActionType, endActionType) => (state, action) => {
+  switch (action.type) {
+    case startActionType:
+      return {
+        ...state,
+        loading: true,
+      };
+    case endActionType: {
+      const { items, totalCount } = action.payload.model;
+      let newItems;
+      if (action.meta.refresh) {
+        newItems = uniqueItems(items);
+      } else {
+        newItems = uniqueItems(state.model.items.concat(items));
+      }
+
+      return {
+        ...state,
+        model: {
+          totalCount,
+          items: newItems,
+        },
+        loading: false,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
 function createAction(type, payload = {}, meta = {}, status) {
   return {
     type,

@@ -2,7 +2,7 @@ import { createAction } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import QiitaApi from '../services/QiitaApi';
 import { parseItems } from '../services/QiitaApiParser';
-import { uniqueItems } from './utility';
+import { createDefaultReducer } from './utility';
 
 const FETCH_LATEST_FEED = 'FETCH_LATEST_FEED';
 const FETCHED_LATEST_FEED = 'FETCHED_LATEST_FEED';
@@ -15,34 +15,9 @@ const initialState = {
   },
 };
 
+const defaultReducer = createDefaultReducer(FETCH_LATEST_FEED, FETCHED_LATEST_FEED);
 export default function reducer(state = initialState, action = {}) {
-  switch (action.type) {
-    case FETCH_LATEST_FEED:
-      return {
-        ...state,
-        loading: true,
-      };
-    case FETCHED_LATEST_FEED: {
-      const { items, totalCount } = action.payload.model;
-      let newItems;
-      if (action.meta.refresh) {
-        newItems = uniqueItems(items);
-      } else {
-        newItems = uniqueItems(state.model.items.concat(items));
-      }
-
-      return {
-        ...state,
-        model: {
-          totalCount,
-          items: newItems,
-        },
-        loading: false,
-      };
-    }
-    default:
-      return state;
-  }
+  return defaultReducer(state, action);
 }
 
 export const fetchLatestFeed = createAction(
