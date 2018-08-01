@@ -86,7 +86,7 @@ function* loginTask(action) {
       }
       const { code } = yield call(QiitaApi.fetchCode);
       const { token } = yield call(QiitaApi.fetchAccessToken, code);
-      yield call(setSession, token);
+      yield call(setSession, { token });
       QiitaApi.token = token;
     } else {
       const { token } = yield call(getSession);
