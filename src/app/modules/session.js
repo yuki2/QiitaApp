@@ -3,10 +3,11 @@ import _ from 'lodash';
 import { AsyncStorage } from 'react-native';
 import Config from 'react-native-config';
 import { createAction } from 'redux-actions';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, fork, put, takeLatest } from 'redux-saga/effects';
 import QiitaApi from '../services/QiitaApi';
 
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 export const LOGGED_IN = 'LOGGED_IN';
 export const LOGGED_OUT = 'LOGGED_OUT';
 
@@ -25,6 +26,8 @@ export const loggedIn = createAction(LOGGED_IN, (myUser, loginStatus) => ({
   myUser,
   loginStatus,
 }));
+
+export const logout = createAction(LOGOUT);
 
 export const loggedOut = createAction(LOGGED_OUT, () => ({
   loginStatus: LoginStatus.NOT_LOGGEDIN,
@@ -68,9 +71,13 @@ function setSession(sessionModel) {
   return AsyncStorage.setItem('session', JSON.stringify(sessionModel));
 }
 
-function* loginQiitaTask(action) {
+function clearSession() {
+  return AsyncStorage.setItem('session', JSON.stringify({}));
+}
+
+function* loginTask(action) {
+  const { requiredUI } = action.payload;
   try {
-    const { requiredUI } = action.payload;
     if (requiredUI) {
       if (_.isEmpty(Config.CLIENT_ID) || _.isEmpty(Config.CLIENT_SECRET)) {
         // eslint-disable-next-line no-console
@@ -79,7 +86,7 @@ function* loginQiitaTask(action) {
       }
       const { code } = yield call(QiitaApi.fetchCode);
       const { token } = yield call(QiitaApi.fetchAccessToken, code);
-      yield call(setSession, { token });
+      yield call(setSession, token);
       QiitaApi.token = token;
     } else {
       const { token } = yield call(getSession);
@@ -88,10 +95,29 @@ function* loginQiitaTask(action) {
     const authenticatedUser = yield call(QiitaApi.fetchAuthenticatedUser);
     yield put(loggedIn(authenticatedUser, LoginStatus.LOGGEDIN_AS_USER));
   } catch (e) {
+    yield put(logout());
+  }
+}
+
+function* logoutTask() {
+  try {
+    yield call(clearSession);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn(e);
+  } finally {
     yield put(loggedOut());
   }
 }
 
-export function* subscribeLoginQiita() {
-  yield takeLatest(LOGIN, loginQiitaTask);
+function* subscribeLogin() {
+  yield takeLatest(LOGIN, loginTask);
+}
+function* subscribeLogout() {
+  yield takeLatest(LOGOUT, logoutTask);
+}
+
+export function* subscribeSession() {
+  yield fork(subscribeLogin);
+  yield fork(subscribeLogout);
 }
