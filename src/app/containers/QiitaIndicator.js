@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -9,17 +9,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class QiitaIndicator extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      animating: true,
-    };
-  }
+const QiitaIndicator = () => <ActivityIndicator animating style={styles.loading} size="large" />;
 
-  render() {
-    return (
-      <ActivityIndicator animating={this.state.animating} style={styles.loading} size="large" />
-    );
-  }
-}
+export default QiitaIndicator;

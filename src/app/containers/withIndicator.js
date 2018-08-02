@@ -1,25 +1,21 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+// @flow
+import React from 'react';
 import _ from 'lodash';
+
+import type { QiitaItem } from '../flow-type';
 
 import QiitaIndicator from './QiitaIndicator';
 
-export default function withIndicator(WrappedComponent) {
-  return class WithIndicator extends PureComponent {
-    static defaultProps = {
-      loading: true,
-      items: [],
-    };
-    static propTypes = {
-      loading: PropTypes.bool,
-      items: PropTypes.array,
-    };
-    render() {
-      const { loading, items } = this.props;
-      if (loading && _.isEmpty(items)) {
-        return <QiitaIndicator />;
-      }
-      return <WrappedComponent {...this.props} />;
-    }
-  };
-}
+type Props = {
+  items: Array<QiitaItem>,
+  loading: boolean,
+};
+const withIndicator = (WrappedComponent: any) => (props: Props) => {
+  const { loading = true, items = [] } = props;
+  if (loading && _.isEmpty(items)) {
+    return <QiitaIndicator />;
+  }
+  return <WrappedComponent {...props} />;
+};
+
+export default withIndicator;

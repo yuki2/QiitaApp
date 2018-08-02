@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { StyleSheet, View, TextInput } from 'react-native';
 
 import { PRIMARY_COLOR } from '../design';
@@ -25,18 +25,19 @@ const styles = StyleSheet.create({
 type Props = {
   onChangeText: (text: string) => void,
 };
-export default class SearchContainer extends PureComponent<Props> {
-  render() {
-    // inside your render function
-    return (
-      <View style={styles.container}>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={this.props.onChangeText}
-          placeholder="Search"
-          underlineColorAndroid="transparent"
-        />
-      </View>
-    );
-  }
-}
+
+const SearchBar = (props: Props) => {
+  const { onChangeText } = props;
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.textInput}
+        onChangeText={onChangeText}
+        placeholder="Search"
+        underlineColorAndroid="transparent"
+      />
+    </View>
+  );
+};
+
+export default SearchBar;
