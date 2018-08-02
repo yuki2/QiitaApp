@@ -110,14 +110,7 @@ function* logoutTask() {
   }
 }
 
-function* subscribeLogin() {
-  yield takeLatest(LOGIN, loginTask);
-}
-function* subscribeLogout() {
-  yield takeLatest(LOGOUT, logoutTask);
-}
-
 export function* subscribeSession() {
-  yield fork(subscribeLogin);
-  yield fork(subscribeLogout);
+  yield fork(takeLatest, LOGIN, loginTask);
+  yield fork(takeLatest, LOGOUT, logoutTask);
 }
