@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
 import _ from 'lodash';
 
@@ -35,47 +35,36 @@ type Props = {
   onEndReached: (distanceFromEnd: number, size: number) => void,
 };
 
-class QiitaList extends Component<Props> {
-  static defaultProps = {
-    items: [],
-    loading: true,
-    onSelectItem: () => {},
-    onEndReached: () => {},
-  };
-
-  renderItem = ({ item }) => (
-    <QiitaCell onSelect={() => this.props.onSelectItem(item)} item={item} />
+const QiitaList = (props: Props) => {
+  const {
+    loading = true,
+    items = [],
+    onRefresh = _.noop,
+    onEndReached = _.noop,
+    onSelectItem = _.noop,
+  } = props;
+  let refresh = {};
+  if (onRefresh) {
+    refresh = {
+      refreshing: loading,
+      onRefresh,
+    };
+  }
+  return (
+    <View style={styles.container}>
+      <FlatList
+        initialNumToRender={10}
+        style={styles.listView}
+        data={items}
+        renderItem={({ item }) => <QiitaCell onSelect={onSelectItem} item={item} />}
+        keyExtractor={item => item.id}
+        ItemSeparatorComponent={separator}
+        onEndReachedThreshold={0.5}
+        onEndReached={info => onEndReached(info.distanceFromEnd, _.size(items))}
+        {...refresh}
+      />
+    </View>
   );
-
-  renderListView = () => {
-    const {
-      loading, items, onRefresh, onEndReached,
-    } = this.props;
-    let refresh = {};
-    if (onRefresh) {
-      refresh = {
-        refreshing: loading,
-        onRefresh,
-      };
-    }
-    return (
-      <View style={styles.container}>
-        <FlatList
-          initialNumToRender={10}
-          style={styles.listView}
-          data={items}
-          renderItem={this.renderItem}
-          keyExtractor={item => item.id}
-          ItemSeparatorComponent={separator}
-          onEndReachedThreshold={0.5}
-          onEndReached={info => onEndReached(info.distanceFromEnd, _.size(items))}
-          {...refresh}
-        />
-      </View>
-    );
-  };
-
-  render = () => this.renderListView();
-}
+};
 
 export default withIndicator(QiitaList);

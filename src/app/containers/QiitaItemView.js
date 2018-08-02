@@ -1,16 +1,14 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { WebView } from 'react-native';
-import PropTypes from 'prop-types';
 
-export default class QiitaItemView extends PureComponent {
-  static defaultProps = {
-    item: {},
-  };
-  static propTypes = {
-    item: PropTypes.object,
-  };
+import type { QiitaItem } from '../flow-type';
 
-  render() {
-    return <WebView source={{ html: this.props.item.rendered_body }} scalesPageToFit />;
-  }
-}
+type Props = {
+  item: QiitaItem,
+};
+
+const QiitaItemView = (props: Props) => {
+  const { item } = props;
+  return <WebView source={{ html: item.rendered_body }} scalesPageToFit />;
+};
+export default QiitaItemView;

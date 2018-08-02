@@ -71,7 +71,11 @@ const renderLikesCount = (item: QiitaItem) => {
 const QiitaCell = (props: Props) => {
   const { item, onSelect } = props;
   return (
-    <TouchableHighlight onPress={onSelect}>
+    <TouchableHighlight
+      onPress={() => {
+        onSelect(item);
+      }}
+    >
       <View style={styles.container}>
         <View style={styles.row}>
           <Image source={{ uri: item.user.profileImageUrl }} style={styles.thumbnail} />

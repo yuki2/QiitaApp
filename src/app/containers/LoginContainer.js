@@ -1,5 +1,5 @@
 // @flow
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-navigation';
@@ -55,28 +55,22 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export class Login extends PureComponent<Props> {
-  static defaultProps = {
-    onLoginPress: () => {},
-  };
-
-  render = () => {
-    const { onLoginPress, loginButtonDisable } = this.props;
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>QiitaApp</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={onLoginPress}
-          disabled={loginButtonDisable}
-        >
-          <Text style={styles.buttonText}>LOGIN</Text>
-        </TouchableOpacity>
-      </SafeAreaView>
-    );
-  };
-}
+const Login = (props: Props) => {
+  const { onLoginPress, loginButtonDisable } = props;
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>QiitaApp</Text>
+      </View>
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={onLoginPress}
+        disabled={loginButtonDisable}
+      >
+        <Text style={styles.buttonText}>LOGIN</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
