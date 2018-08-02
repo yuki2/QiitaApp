@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-navigation';
 import _ from 'lodash';
@@ -16,10 +16,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: PRIMARY_COLOR,
-  },
-  listContainer: {
-    flex: 1,
-    backgroundColor: 'white',
   },
 });
 
@@ -89,15 +85,13 @@ class StockContainer extends Component<Props> {
     const { loading, model } = stockItems;
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.listContainer}>
-          <QiitaList
-            items={model.items}
-            loading={loading}
-            onSelectItem={this._onSelectItem}
-            onRefresh={this._onRefresh}
-            onEndReached={this._onEndReached}
-          />
-        </View>
+        <QiitaList
+          items={model.items}
+          loading={loading}
+          onSelectItem={this._onSelectItem}
+          onRefresh={this._onRefresh}
+          onEndReached={this._onEndReached}
+        />
       </SafeAreaView>
     );
   }

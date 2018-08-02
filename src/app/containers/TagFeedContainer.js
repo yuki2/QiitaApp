@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import { PRIMARY_COLOR } from '../design';
@@ -16,10 +16,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: PRIMARY_COLOR,
-  },
-  listContainer: {
-    flex: 1,
-    backgroundColor: 'white',
   },
   tabBar: {
     backgroundColor: PRIMARY_COLOR,
@@ -81,15 +77,13 @@ class TagFeedContainer extends Component<Props> {
     const { model, loading } = tagFeed;
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.listContainer}>
-          <QiitaList
-            items={model.items}
-            loading={loading}
-            onSelectItem={this._onSelectItem}
-            onRefresh={this._onRefresh}
-            onEndReached={this._onEndReached}
-          />
-        </View>
+        <QiitaList
+          items={model.items}
+          loading={loading}
+          onSelectItem={this._onSelectItem}
+          onRefresh={this._onRefresh}
+          onEndReached={this._onEndReached}
+        />
       </SafeAreaView>
     );
   }
