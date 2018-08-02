@@ -1,10 +1,9 @@
 import keyMirror from 'keymirror';
 import _ from 'lodash';
-import { AsyncStorage } from 'react-native';
 import Config from 'react-native-config';
 import { createAction } from 'redux-actions';
 import { call, fork, put, takeLatest } from 'redux-saga/effects';
-import QiitaApi from '../services/QiitaApi';
+import { qiitaApi, qiitaAuth } from '../services/qiita-client';
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
@@ -63,18 +62,6 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-function getSession() {
-  return AsyncStorage.getItem('session').then(res => JSON.parse(res));
-}
-
-function setSession(sessionModel) {
-  return AsyncStorage.setItem('session', JSON.stringify(sessionModel));
-}
-
-function clearSession() {
-  return AsyncStorage.setItem('session', JSON.stringify({}));
-}
-
 function* loginTask(action) {
   const { requiredUI } = action.payload;
   try {
@@ -84,15 +71,14 @@ function* loginTask(action) {
         console.error('You must define CLIENT_ID and CLIENT_SECRET at .env file');
         return; // TODO throw
       }
-      const { code } = yield call(QiitaApi.fetchCode);
-      const { token } = yield call(QiitaApi.fetchAccessToken, code);
-      yield call(setSession, { token });
-      QiitaApi.token = token;
+      const { code } = yield call(qiitaAuth.authorize);
+      const { token } = yield call(qiitaAuth.fetchAccessToken, code);
+      qiitaApi.token = token;
     } else {
-      const { token } = yield call(getSession);
-      QiitaApi.token = token;
+      const { token } = yield call(qiitaAuth.getSession);
+      qiitaApi.token = token;
     }
-    const authenticatedUser = yield call(QiitaApi.fetchAuthenticatedUser);
+    const authenticatedUser = yield call(qiitaApi.fetchAuthenticatedUser);
     yield put(loggedIn(authenticatedUser, LoginStatus.LOGGEDIN_AS_USER));
   } catch (e) {
     yield put(logout());
@@ -101,7 +87,7 @@ function* loginTask(action) {
 
 function* logoutTask() {
   try {
-    yield call(clearSession);
+    yield call(qiitaAuth.clearSession);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.warn(e);

@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
-import QiitaApi from '../services/QiitaApi';
-import { parseItems } from '../services/QiitaApiParser';
+import { qiitaApi } from '../services/qiita-client';
+import { parseItems } from '../services/parser';
 import { createDefaultReducer } from './utility';
 
 const FETCH_LATEST_FEED = 'FETCH_LATEST_FEED';
@@ -40,7 +40,7 @@ function* fetchLatestFeedTask(action) {
   const { page, perPage } = action.payload;
   const { refresh } = action.meta;
   try {
-    const res = yield call(QiitaApi.fetchItems, page, perPage);
+    const res = yield call(qiitaApi.fetchItems, page, perPage);
     const model = parseItems(res);
     yield put(fetchedLatestFeed(model, refresh));
   } catch (e) {

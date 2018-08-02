@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import QiitaApi from '../services/QiitaApi';
-import { parseItems, parseTags } from '../services/QiitaApiParser';
+import { qiitaApi } from '../services/qiita-client';
+import { parseItems, parseTags } from '../services/parser';
 import { createDefaultReducer } from './utility';
 
 const FETCH_TAG_FEED = 'FETCH_TAG_FEED';
@@ -35,7 +35,7 @@ export const fetchedTagFeed = createAction(
 );
 
 function* fetchItemsByTags({ tags, page, perPage }) {
-  const tasks = tags.map(tag => call(QiitaApi.fetchItemsByTag, tag, page, perPage));
+  const tasks = tags.map(tag => call(qiitaApi.fetchItemsByTag, tag, page, perPage));
 
   const responseArray = yield all(tasks);
   const itemModels = responseArray.map(response => parseItems(response));
@@ -53,7 +53,7 @@ function* fetchTagFeedTask(action) {
   const { userId, page, perPage } = action.payload;
   const { refresh } = action.meta;
   try {
-    const followingTagsRes = yield call(QiitaApi.fetchFollowingTags, userId, page, perPage);
+    const followingTagsRes = yield call(qiitaApi.fetchFollowingTags, userId, page, perPage);
     const tagsModel = parseTags(followingTagsRes);
     const model = yield call(fetchItemsByTags, {
       tags: tagsModel.tags.map(tag => tag.id),

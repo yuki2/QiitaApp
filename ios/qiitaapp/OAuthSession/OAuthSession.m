@@ -19,29 +19,20 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(start:(NSDictionary *)args resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
   NSString *url = args[@"url"];
-  NSString *clientId = args[@"clientId"];
-  NSArray *scopes = args[@"scopes"];
+  NSString *schema = args[@"schema"];
+//  NSString *state = args[@"schema"];
   
-  NSString *state = [[NSUUID UUID] UUIDString];
-  NSString *scope = [scopes componentsJoinedByString:@" "];
-  NSArray *queryItems = @[
-                          [NSURLQueryItem queryItemWithName:@"client_id" value:clientId],
-                          [NSURLQueryItem queryItemWithName:@"state" value:state],
-                          [NSURLQueryItem queryItemWithName:@"scope" value:scope]];
-  NSURLComponents *components = [[NSURLComponents alloc] initWithString:url];
-  components.queryItems = queryItems;
-  
-  self.session = [[SFAuthenticationSession alloc] initWithURL:[components URL] callbackURLScheme:@"qiitaapp" completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
+  self.session = [[SFAuthenticationSession alloc] initWithURL:[NSURL URLWithString:url] callbackURLScheme:schema completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
     if(error != nil) {
       reject([NSString stringWithFormat:@"%ld", error.code], error.description, error);
       return;
     }
     
     NSURLComponents *callbackURLComponents = [[NSURLComponents alloc] initWithURL:callbackURL resolvingAgainstBaseURL:YES];
-    if(![self checkState:callbackURLComponents state:state]) {
-      reject(@"401", @"Unauthorized state", nil);
-      return;
-    }
+//    if(![self checkState:callbackURLComponents state:state]) {
+//      reject(@"401", @"Unauthorized state", nil);
+//      return;
+//    }
     resolve(@{@"code": [self extractCode:callbackURLComponents]});
   }];
   

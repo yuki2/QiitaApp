@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { createAction } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
-import QiitaApi from '../services/QiitaApi';
-import { parseItems } from '../services/QiitaApiParser';
+import { qiitaApi } from '../services/qiita-client';
+import { parseItems } from '../services/parser';
 import { createDefaultReducer } from './utility';
 
 const SEARCH_ITEMS = 'SEARCH_ITEMS';
@@ -43,7 +43,7 @@ function* fetchSearchItemsTask(action) {
       yield put(searchedItems(emptyModel, refresh));
       return;
     }
-    const res = yield call(QiitaApi.fetchItemsByQuery, query, page, perPage);
+    const res = yield call(qiitaApi.fetchItemsByQuery, query, page, perPage);
     const model = parseItems(res);
     yield put(searchedItems(model, refresh));
   } catch (e) {

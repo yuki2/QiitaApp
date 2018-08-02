@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
-import QiitaApi from '../services/QiitaApi';
-import { parseItems } from '../services/QiitaApiParser';
+import { qiitaApi } from '../services/qiita-client';
+import { parseItems } from '../services/parser';
 import { createDefaultReducer } from './utility';
 
 const FETCH_STOCK_ITEMS = 'FETCH_STOCK_ITEMS';
@@ -38,7 +38,7 @@ function* fetchStockItemsTask(action) {
   const { userId, page, perPage } = action.payload;
   const { refresh } = action.meta;
   try {
-    const res = yield call(QiitaApi.fetchStockItems, userId, page, perPage);
+    const res = yield call(qiitaApi.fetchStockItems, userId, page, perPage);
     const model = parseItems(res);
     yield put(fetchedStockItems(model, refresh));
   } catch (e) {
