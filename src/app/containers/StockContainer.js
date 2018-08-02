@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import type { QiitaItemsModel, QiitaItem, QiitaUser } from '../flow-type';
 import { PRIMARY_COLOR } from '../design';
-import { startFetchStockItems } from '../modules/stockItems';
+import { fetchStockItems } from '../modules/stockItems';
 import { openInAppBrowser } from '../modules/inAppBrowser';
 
 import QiitaList from './QiitaList';
@@ -31,8 +31,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchStockItems: (userId: string, page: number, perPage: number, refresh: boolean) => {
-    dispatch(startFetchStockItems(userId, page, perPage, refresh));
+  fetchStockItemsWithUserId: (userId: string, page: number, perPage: number, refresh: boolean) => {
+    dispatch(fetchStockItems(userId, page, perPage, refresh));
   },
   openInAppBrowserByUrl: (url: string) => {
     dispatch(openInAppBrowser(url));
@@ -40,39 +40,44 @@ const mapDispatchToProps = dispatch => ({
 });
 
 type Props = {
-  fetchStockItems: (userId: string, page: number, perPage: number, refresh: boolean) => void,
+  fetchStockItemsWithUserId: (
+    userId: string,
+    page: number,
+    perPage: number,
+    refresh: boolean,
+  ) => void,
   openInAppBrowserByUrl: (url: string) => void,
   stockItems: { loading: boolean, model: QiitaItemsModel },
   myUser: QiitaUser,
 };
 class StockContainer extends Component<Props> {
   static defaultProps = {
-    fetchStockItems: () => {},
+    fetchStockItemsWithUserId: () => {},
     openInAppBrowserByUrl: () => {},
     stockItems: { loading: false, model: { items: [] } },
     myUser: {},
   };
 
   componentDidMount = () => {
-    const { stockItems, fetchStockItems, myUser } = this.props;
+    const { stockItems, fetchStockItemsWithUserId, myUser } = this.props;
     if (!_.isEmpty(stockItems.model.items)) {
       return;
     }
-    fetchStockItems(myUser.id, 1, PER_PAGE, true);
+    fetchStockItemsWithUserId(myUser.id, 1, PER_PAGE, true);
   };
 
   _onRefresh = () => {
-    const { fetchStockItems, myUser } = this.props;
-    fetchStockItems(myUser.id, 1, PER_PAGE, true);
+    const { fetchStockItemsWithUserId, myUser } = this.props;
+    fetchStockItemsWithUserId(myUser.id, 1, PER_PAGE, true);
   };
 
   _onEndReached = (distanceFromEnd: number, size: number) => {
     const page = size / PER_PAGE + 1;
-    const { stockItems, fetchStockItems, myUser } = this.props;
+    const { stockItems, fetchStockItemsWithUserId, myUser } = this.props;
     if (_.size(stockItems.model.items) < PER_PAGE) {
       return;
     }
-    fetchStockItems(myUser.id, page, PER_PAGE, true);
+    fetchStockItemsWithUserId(myUser.id, page, PER_PAGE, true);
   };
 
   _onSelectItem = (item: QiitaItem) => {

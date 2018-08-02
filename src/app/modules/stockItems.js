@@ -1,59 +1,51 @@
+import { createAction } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import QiitaApi from '../services/QiitaApi';
 import { parseItems } from '../services/QiitaApiParser';
-import {
-  createAbortAction,
-  createCompleteAction,
-  createStartAction,
-  defaultReducer,
-  pattern,
-} from './utility';
+import { createDefaultReducer } from './utility';
 
 const FETCH_STOCK_ITEMS = 'FETCH_STOCK_ITEMS';
+const FETCHED_STOCK_ITEMS = 'FETCHED_STOCK_ITEMS';
 
+const emptyModel = { totalCount: 0, items: [] };
 const initialState = {
   loading: false,
-  model: {
-    totalCount: 0,
-    items: [],
-  },
-  error: {},
+  model: emptyModel,
 };
 
+const defaultReducer = createDefaultReducer(FETCH_STOCK_ITEMS, FETCHED_STOCK_ITEMS);
 export default function reducer(state = initialState, action = {}) {
-  return defaultReducer(state, action, FETCH_STOCK_ITEMS);
+  return defaultReducer(state, action);
 }
 
-export function startFetchStockItems(userId, page = 1, perPage = 20, refresh = false) {
-  return createStartAction(FETCH_STOCK_ITEMS, {
-    userId,
-    page,
-    perPage,
+export const fetchStockItems = createAction(
+  FETCH_STOCK_ITEMS,
+  (userId, page = 1, perPage = 20) => ({ userId, page, perPage }),
+  (userId, page, perPage, refresh = false) => ({
     refresh,
-  });
-}
+  }),
+);
 
-export function completeFetchStockItems(model, refresh) {
-  return createCompleteAction(FETCH_STOCK_ITEMS, { model }, { refresh });
-}
-
-export function abortFetchStockItems(error) {
-  return createAbortAction(FETCH_STOCK_ITEMS, { error });
-}
+export const fetchedStockItems = createAction(
+  FETCHED_STOCK_ITEMS,
+  model => ({ model }),
+  (model, refresh) => ({
+    refresh,
+  }),
+);
 
 function* fetchStockItemsTask(action) {
+  const { userId, page, perPage } = action.payload;
+  const { refresh } = action.meta;
   try {
-    const {
-      userId, page, perPage, refresh,
-    } = action.payload;
     const res = yield call(QiitaApi.fetchStockItems, userId, page, perPage);
     const model = parseItems(res);
-    yield put(completeFetchStockItems(model, refresh));
+    yield put(fetchedStockItems(model, refresh));
   } catch (e) {
-    yield put(abortFetchStockItems(e));
+    yield put(fetchedStockItems(emptyModel, refresh));
   }
 }
 
 export function* subscribeFetchStockItem() {
-  yield takeLatest(pattern(startFetchStockItems()), fetchStockItemsTask);
+  yield takeLatest(FETCH_STOCK_ITEMS, fetchStockItemsTask);
 }
