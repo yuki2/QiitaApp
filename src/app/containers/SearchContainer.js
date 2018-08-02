@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-navigation';
 
 import type { QiitaItemsModel, QiitaItem } from '../flow-type';
 import { PRIMARY_COLOR } from '../design';
-import { startSearchItems } from '../modules/search';
+import { searchItems } from '../modules/search';
 import { openInAppBrowser } from '../modules/inAppBrowser';
 
 import SearchBar from './SearchBar';
@@ -30,8 +30,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  searchItems: (query: string, page: number, perPage: number, refresh: boolean) => {
-    dispatch(startSearchItems(query, page, perPage, refresh));
+  searchItemsWithQuery: (query: string, page: number, perPage: number, refresh: boolean) => {
+    dispatch(searchItems(query, page, perPage, refresh));
   },
   openInAppBrowserByUrl: (url: string) => {
     dispatch(openInAppBrowser(url));
@@ -39,14 +39,14 @@ const mapDispatchToProps = dispatch => ({
 });
 
 type Props = {
-  searchItems: (query: string, page: number, perPage: number, refresh: boolean) => void,
+  searchItemsWithQuery: (query: string, page: number, perPage: number, refresh: boolean) => void,
   search: { loading: boolean, model: QiitaItemsModel },
   openInAppBrowserByUrl: (url: string) => void,
 };
 class SearchContainer extends Component<Props> {
   _onChangeText = (text: string) => {
-    const { searchItems } = this.props;
-    searchItems(text, 1, PER_PAGE, true);
+    const { searchItemsWithQuery } = this.props;
+    searchItemsWithQuery(text, 1, PER_PAGE, true);
   };
 
   _onSelectItem = (item: QiitaItem) => {

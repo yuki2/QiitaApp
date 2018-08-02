@@ -1,64 +1,56 @@
 import _ from 'lodash';
+import { createAction } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import QiitaApi from '../services/QiitaApi';
 import { parseItems } from '../services/QiitaApiParser';
-import {
-  createAbortAction,
-  createCompleteAction,
-  createStartAction,
-  defaultReducer,
-  pattern,
-} from './utility';
+import { createDefaultReducer } from './utility';
 
 const SEARCH_ITEMS = 'SEARCH_ITEMS';
+const SEARCHED_ITEMS = 'SEARCHED_ITEMS';
 
+const emptyModel = { totalCount: 0, items: [] };
 const initialState = {
   loading: false,
-  model: {
-    totalCount: 0,
-    items: [],
-  },
-  error: {},
+  model: emptyModel,
 };
 
+const defaultReducer = createDefaultReducer(SEARCH_ITEMS, SEARCHED_ITEMS);
 export default function reducer(state = initialState, action = {}) {
-  return defaultReducer(state, action, SEARCH_ITEMS);
+  return defaultReducer(state, action);
 }
 
-export function startSearchItems(query, page = 1, perPage = 20, refresh = false) {
-  return createStartAction(SEARCH_ITEMS, {
-    query,
-    page,
-    perPage,
+export const searchItems = createAction(
+  SEARCH_ITEMS,
+  (query, page = 1, perPage = 20) => ({ query, page, perPage }),
+  (query, page, perPage, refresh = false) => ({
     refresh,
-  });
-}
+  }),
+);
 
-export function completeSearchItems(model, refresh) {
-  return createCompleteAction(SEARCH_ITEMS, { model }, { refresh });
-}
-
-export function abortSearchItems(error) {
-  return createAbortAction(SEARCH_ITEMS, { error });
-}
+export const searchedItems = createAction(
+  SEARCHED_ITEMS,
+  model => ({ model }),
+  (model, refresh) => ({
+    refresh,
+  }),
+);
 
 function* fetchSearchItemsTask(action) {
+  const { query, page, perPage } = action.payload;
+  const { refresh } = action.meta;
   try {
-    const {
-      query, page, perPage, refresh,
-    } = action.payload;
     if (_.isEmpty(query)) {
-      yield put(completeSearchItems({ totalCount: 0, items: [] }, refresh));
+      yield put(searchedItems(emptyModel, refresh));
       return;
     }
     const res = yield call(QiitaApi.fetchItemsByQuery, query, page, perPage);
     const model = parseItems(res);
-    yield put(completeSearchItems(model, refresh));
+    yield put(searchedItems(model, refresh));
   } catch (e) {
-    yield put(abortSearchItems(e));
+    yield put(searchedItems(emptyModel, refresh));
   }
 }
 
 export function* subscribeSearchItems() {
-  yield takeLatest(pattern(startSearchItems()), fetchSearchItemsTask);
+  yield takeLatest(SEARCH_ITEMS, fetchSearchItemsTask);
 }
