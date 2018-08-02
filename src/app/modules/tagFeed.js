@@ -1,45 +1,38 @@
+import { createAction } from 'redux-actions';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import QiitaApi from '../services/QiitaApi';
 import { parseItems, parseTags } from '../services/QiitaApiParser';
-import {
-  createAbortAction,
-  createCompleteAction,
-  createStartAction,
-  defaultReducer,
-  pattern,
-} from './utility';
+import { createDefaultReducer } from './utility';
 
 const FETCH_TAG_FEED = 'FETCH_TAG_FEED';
+const FETCHED_TAG_FEED = 'FETCHED_TAG_FEED';
 
+const emptyModel = { totalCount: 0, items: [] };
 const initialState = {
   loading: false,
-  model: {
-    totalCount: 0,
-    items: [],
-  },
-  error: {},
+  model: emptyModel,
 };
 
+const defaultReducer = createDefaultReducer(FETCH_TAG_FEED, FETCHED_TAG_FEED);
 export default function reducer(state = initialState, action = {}) {
-  return defaultReducer(state, action, FETCH_TAG_FEED);
+  return defaultReducer(state, action);
 }
 
-export function startFetchTagFeed(userId, page = 1, perPage = 20, refresh = false) {
-  return createStartAction(FETCH_TAG_FEED, {
-    userId,
-    page,
-    perPage,
+export const fetchTagFeed = createAction(
+  FETCH_TAG_FEED,
+  (userId, page = 1, perPage = 20) => ({ userId, page, perPage }),
+  (userId, page, perPage, refresh = false) => ({
     refresh,
-  });
-}
+  }),
+);
 
-export function completeFetchTagFeed(model, refresh) {
-  return createCompleteAction(FETCH_TAG_FEED, { model }, { refresh });
-}
-
-export function abortFetchTagFeed(error) {
-  return createAbortAction(FETCH_TAG_FEED, { error });
-}
+export const fetchedTagFeed = createAction(
+  FETCHED_TAG_FEED,
+  model => ({ model }),
+  (model, refresh) => ({
+    refresh,
+  }),
+);
 
 function* fetchItemsByTags({ tags, page, perPage }) {
   const tasks = tags.map(tag => call(QiitaApi.fetchItemsByTag, tag, page, perPage));
@@ -57,10 +50,9 @@ function* fetchItemsByTags({ tags, page, perPage }) {
 }
 
 function* fetchTagFeedTask(action) {
+  const { userId, page, perPage } = action.payload;
+  const { refresh } = action.meta;
   try {
-    const {
-      userId, page, perPage, refresh,
-    } = action.payload;
     const followingTagsRes = yield call(QiitaApi.fetchFollowingTags, userId, page, perPage);
     const tagsModel = parseTags(followingTagsRes);
     const model = yield call(fetchItemsByTags, {
@@ -68,12 +60,12 @@ function* fetchTagFeedTask(action) {
       page,
       perPage,
     });
-    yield put(completeFetchTagFeed(model, refresh));
+    yield put(fetchedTagFeed(model, refresh));
   } catch (e) {
-    yield put(abortFetchTagFeed(e));
+    yield put(fetchedTagFeed(emptyModel, refresh));
   }
 }
 
 export function* subscribeFetchLatestItems() {
-  yield takeLatest(pattern(startFetchTagFeed()), fetchTagFeedTask);
+  yield takeLatest(FETCH_TAG_FEED, fetchTagFeedTask);
 }

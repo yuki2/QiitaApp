@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import { PRIMARY_COLOR } from '../design';
 import { openInAppBrowser } from '../modules/inAppBrowser';
-import { startFetchTagFeed } from '../modules/tagFeed';
+import { fetchTagFeed } from '../modules/tagFeed';
 import QiitaList from './QiitaList';
 
 import type { QiitaItemsModel, QiitaItem, QiitaUser } from '../flow-type';
@@ -32,8 +32,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchTagFeed: (userId, page, perPage, refresh) => {
-    dispatch(startFetchTagFeed(userId, page, perPage, refresh));
+  fetchTagFeedWithUserId: (userId, page, perPage, refresh) => {
+    dispatch(fetchTagFeed(userId, page, perPage, refresh));
   },
   openInAppBrowserByUrl: (url) => {
     dispatch(openInAppBrowser(url));
@@ -41,14 +41,14 @@ const mapDispatchToProps = dispatch => ({
 });
 
 type Props = {
-  fetchTagFeed: (userId: string, page: number, perPage: number, refresh: boolean) => void,
+  fetchTagFeedWithUserId: (userId: string, page: number, perPage: number, refresh: boolean) => void,
   openInAppBrowserByUrl: (url: string) => void,
   tagFeed: { loading: boolean, model: QiitaItemsModel },
   myUser: QiitaUser,
 };
 class TagFeedContainer extends Component<Props> {
   static defaultProps = {
-    fetchTagFeed: () => {},
+    fetchTagFeedWithUserId: () => {},
     openInAppBrowserByUrl: () => {},
     tagFeed: { loading: false, model: { items: [] } },
   };
@@ -58,8 +58,8 @@ class TagFeedContainer extends Component<Props> {
   }
 
   _fetchItems = (page: number, refresh: boolean) => {
-    const { fetchTagFeed, myUser } = this.props;
-    fetchTagFeed(myUser.id, page, PER_PAGE, refresh);
+    const { fetchTagFeedWithUserId, myUser } = this.props;
+    fetchTagFeedWithUserId(myUser.id, page, PER_PAGE, refresh);
   };
 
   _onRefresh = () => {
