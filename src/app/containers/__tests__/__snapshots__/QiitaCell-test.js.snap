@@ -1,0 +1,177 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  accessible={true}
+  isTVSelectable={true}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={null}
+>
+  <View
+    style={
+      Object {
+        "backgroundColor": "white",
+        "flex": 1,
+        "paddingLeft": 8,
+        "paddingRight": 8,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "marginBottom": 4,
+          "marginTop": 4,
+        }
+      }
+    >
+      <Image
+        source={
+          Object {
+            "uri": "profileImageUrl",
+          }
+        }
+        style={
+          Object {
+            "height": 12,
+            "width": 12,
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "color": "gray",
+            "fontSize": 12,
+            "marginLeft": 4,
+            "textAlign": "left",
+          }
+        }
+      >
+        id
+      </Text>
+      <Text
+        style={
+          Object {
+            "color": "gray",
+            "flex": 1,
+            "fontSize": 12,
+            "marginLeft": 4,
+            "textAlign": "right",
+          }
+        }
+      >
+        a few seconds ago
+      </Text>
+    </View>
+    <Text
+      style={
+        Object {
+          "fontSize": 15,
+          "marginBottom": 4,
+          "marginTop": 4,
+          "textAlign": "left",
+        }
+      }
+    >
+      title
+    </Text>
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "marginBottom": 4,
+          "marginTop": 4,
+        }
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "marginBottom": 4,
+            "marginTop": 4,
+          }
+        }
+      >
+        <Text
+          allowFontScaling={false}
+          style={
+            Array [
+              Object {
+                "color": "gray",
+                "fontSize": 12,
+              },
+              undefined,
+              Object {
+                "fontFamily": "Ionicons",
+                "fontStyle": "normal",
+                "fontWeight": "normal",
+              },
+            ]
+          }
+        >
+          
+        </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "gray",
+                "fontSize": 12,
+                "marginLeft": 4,
+                "textAlign": "left",
+              },
+              Object {
+                "marginRight": 8,
+              },
+            ]
+          }
+        >
+          1
+        </Text>
+      </View>
+      <Text
+        allowFontScaling={false}
+        style={
+          Array [
+            Object {
+              "color": "gray",
+              "fontSize": 12,
+            },
+            undefined,
+            Object {
+              "fontFamily": "Ionicons",
+              "fontStyle": "normal",
+              "fontWeight": "normal",
+            },
+          ]
+        }
+      >
+        
+      </Text>
+      <Text
+        style={
+          Object {
+            "color": "gray",
+            "fontSize": 12,
+            "marginLeft": 4,
+            "textAlign": "left",
+          }
+        }
+      >
+        , 
+      </Text>
+    </View>
+  </View>
+</View>
+`;

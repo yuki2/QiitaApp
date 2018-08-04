@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "#59BB0C",
+      "height": 40,
+      "padding": 5,
+    }
+  }
+>
+  <TextInput
+    allowFontScaling={true}
+    onChangeText={[Function]}
+    placeholder="Search"
+    style={
+      Object {
+        "backgroundColor": "#f7f7f7",
+        "borderColor": "#444",
+        "borderRadius": 5,
+        "fontSize": 13,
+        "height": 30,
+        "paddingBottom": 5,
+        "paddingLeft": 20,
+        "paddingTop": 5,
+        "textAlign": "left",
+      }
+    }
+    underlineColorAndroid="transparent"
+  />
+</View>
+`;
