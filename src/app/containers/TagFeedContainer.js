@@ -89,4 +89,4 @@ class TagFeedContainer extends Component<Props> {
   }
 }
 
-export default connect(() => mapStateToProps, mapDispatchToProps)(TagFeedContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(TagFeedContainer);

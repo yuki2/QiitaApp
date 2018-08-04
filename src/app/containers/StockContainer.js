@@ -97,4 +97,4 @@ class StockContainer extends Component<Props> {
   }
 }
 
-export default connect(() => mapStateToProps, mapDispatchToProps)(StockContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(StockContainer);

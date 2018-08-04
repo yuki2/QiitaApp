@@ -87,4 +87,4 @@ class LatestFeedContainer extends Component<Props> {
   }
 }
 
-export default connect(() => mapStateToProps, mapDispatchToProps)(LatestFeedContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(LatestFeedContainer);

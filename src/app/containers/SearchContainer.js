@@ -61,4 +61,4 @@ class SearchContainer extends Component<Props> {
   }
 }
 
-export default connect(() => mapStateToProps, mapDispatchToProps)(SearchContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchContainer);
