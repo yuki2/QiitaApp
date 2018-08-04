@@ -22,7 +22,7 @@ export type QiitaItem = {
   url: string,
   user: QiitaUser,
   tags: Array<any>,
-  createdAt: Date,
+  createdAt: ?Date,
   likesCount: number,
 };
 

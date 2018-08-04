@@ -1,47 +1,64 @@
 // @flow
+import _ from 'lodash';
 import type { PagingResponse, QiitaTagsModel, QiitaItemsModel, QiitaUser } from '../flow-type';
+
+const getString = (response: any, path: string): string => {
+  const value = _.get(response, path, '');
+  return _.toString(value);
+};
+
+const getNumber = (response: any, path: string): number => {
+  const value = _.get(response, path, 0);
+  return _.toNumber(value);
+};
 
 export function parseUser(response: any): QiitaUser {
   return {
-    description: response.description,
-    facebookId: response.facebook_id,
-    followeesCount: response.followees_count,
-    followersCount: response.followers_count,
-    githubLoginName: response.github_login_name,
-    id: response.id,
-    itemsCount: response.items_count,
-    name: response.name,
-    organization: response.organization,
-    permanentId: response.permanent_id,
-    profileImageUrl: response.profile_image_url,
-    twitterScreenName: response.twitter_screen_name,
-    websiteUrl: response.website_url,
+    description: getString(response, 'description'),
+    facebookId: getString(response, 'facebook_id'),
+    followeesCount: getNumber(response, 'followees_count'),
+    followersCount: getNumber(response, 'followers_count'),
+    githubLoginName: getString(response, 'github_login_name'),
+    id: getString(response, 'id'),
+    itemsCount: getNumber(response, 'items_count'),
+    name: getString(response, 'name'),
+    organization: getString(response, 'organization'),
+    permanentId: getNumber(response, 'permanent_id'),
+    profileImageUrl: getString(response, 'profile_image_url'),
+    twitterScreenName: getString(response, 'twitter_screen_name'),
+    websiteUrl: getString(response, 'website_url'),
   };
 }
 
 export function parseItems(response: PagingResponse): QiitaItemsModel {
-  const { totalCount, items } = response;
+  const totalCount = _.get(response, 'totalCount', 0);
+  const items = _.get(response, 'items', []);
+  const totalCountNum: number = _.toNumber(totalCount);
+  const itemsArray: Array<any> = _.toArray(items);
   return {
-    totalCount,
-    items: items.map(item => ({
-      id: item.id,
-      title: item.title,
-      url: item.url,
+    totalCount: totalCountNum,
+    items: itemsArray.map(item => ({
+      id: getString(item, 'id'),
+      title: getString(item, 'title'),
+      url: getString(item, 'url'),
       user: parseUser(item.user),
-      tags: item.tags,
-      createdAt: new Date(item.created_at),
-      likesCount: item.likes_count,
+      tags: _.isArray(item.tags) ? item.tags : [],
+      createdAt: item.created_at ? new Date(item.created_at) : null,
+      likesCount: getNumber(item, 'likes_count'),
     })),
   };
 }
 
 export function parseTags(response: PagingResponse): QiitaTagsModel {
-  const { totalCount, items } = response;
+  const totalCount = _.get(response, 'totalCount', 0);
+  const items = _.get(response, 'items', []);
+  const totalCountNum: number = _.toNumber(totalCount);
+  const itemsArray: Array<any> = _.toArray(items);
   return {
-    totalCount,
-    tags: items.map(item => ({
-      id: item.id,
-      iconUrl: item.icon_url,
+    totalCount: totalCountNum,
+    tags: itemsArray.map(item => ({
+      id: getString(item, 'id'),
+      iconUrl: getString(item, 'icon_url'),
     })),
   };
 }
