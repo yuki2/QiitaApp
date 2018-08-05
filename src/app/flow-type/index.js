@@ -40,5 +40,3 @@ export type QiitaTagsModel = {
   totalCount: number,
   tags: Array<QiitaTag>,
 };
-
-export type PagingResponse = { totalCount: number, items: Array<any> };

@@ -1,6 +1,6 @@
 // @flow
 import _ from 'lodash';
-import type { PagingResponse, QiitaTagsModel, QiitaItemsModel, QiitaUser } from '../flow-type';
+import type { QiitaTagsModel, QiitaItemsModel, QiitaUser } from '../flow-type';
 
 const getString = (response: any, path: string): string => {
   const value = _.get(response, path, '');
@@ -30,7 +30,7 @@ export function parseUser(response: any): QiitaUser {
   };
 }
 
-export function parseItems(response: PagingResponse): QiitaItemsModel {
+export function parseItems(response: any): QiitaItemsModel {
   const totalCount = _.get(response, 'totalCount', 0);
   const items = _.get(response, 'items', []);
   const totalCountNum: number = _.toNumber(totalCount);
@@ -49,7 +49,7 @@ export function parseItems(response: PagingResponse): QiitaItemsModel {
   };
 }
 
-export function parseTags(response: PagingResponse): QiitaTagsModel {
+export function parseTags(response: any): QiitaTagsModel {
   const totalCount = _.get(response, 'totalCount', 0);
   const items = _.get(response, 'items', []);
   const totalCountNum: number = _.toNumber(totalCount);

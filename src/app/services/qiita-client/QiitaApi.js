@@ -1,27 +1,6 @@
 // @flow
 import _ from 'lodash';
-
-import type { PagingResponse } from '../../flow-type';
-
 import { createUrl } from './utility';
-
-const onFulfill = (response: Response): Promise<JSON> => {
-  if (!response.ok) {
-    // eslint-disable-next-line prefer-promise-reject-errors
-    return Promise.reject({ status: response.status });
-  }
-
-  return response.json();
-};
-
-const onFulfillPaging = (response: Response): Promise<PagingResponse> => {
-  if (!response.ok) {
-    // eslint-disable-next-line prefer-promise-reject-errors
-    return Promise.reject({ status: response.status });
-  }
-  const totalCount: number = _.toNumber(response.headers.get('total-count'));
-  return response.json().then(items => ({ totalCount, items }));
-};
 
 export default class QiitaApi {
   _token: string;
@@ -35,6 +14,26 @@ export default class QiitaApi {
     this._token = val;
   }
 
+  fetchWithAuth = async (url: string): Promise<{ json: JSON, response: Response }> => {
+    if (_.isEmpty(this._token)) {
+      throw new Error('token is empty');
+    }
+    const response: Response = await fetch(url, {
+      headers: { Authorization: `Bearer ${this._token}` },
+    });
+    if (!response.ok) {
+      throw new Error(JSON.stringify({ status: response.status }));
+    }
+    const json: JSON = await response.json();
+    return { response, json };
+  };
+
+  withTotalCount = ({ response, json }: { response: Response, json: JSON }) => {
+    const totalCount: number = _.toNumber(response.headers.get('total-count'));
+    const items = json;
+    return { response, json: { totalCount, items } };
+  };
+
   authedFetch = (url: string): Promise<Response> => {
     if (_.isEmpty(this._token)) {
       return fetch(url);
@@ -44,54 +43,45 @@ export default class QiitaApi {
     });
   };
 
-  fetchItemsByTag = (
-    tag: string,
-    page: number = 1,
-    perPage: number = 20,
-  ): Promise<PagingResponse> => {
+  fetchItemsByTag = async (tag: string, page: number = 1, perPage: number = 20) => {
     const path = `/api/v2/tags/${tag}/items`;
     const url = createUrl(this._baseUrl + path, { page, per_page: perPage });
-    return this.authedFetch(url).then(onFulfillPaging);
+    const result = await this.fetchWithAuth(url);
+    return this.withTotalCount(result).json;
   };
 
-  fetchItems = (page: number = 1, perPage: number = 20): Promise<PagingResponse> => {
+  fetchItems = async (page: number = 1, perPage: number = 20) => {
     const path: string = '/api/v2/items';
     const url = createUrl(this._baseUrl + path, { page, per_page: perPage });
-    return this.authedFetch(url).then(onFulfillPaging);
+    const result = await this.fetchWithAuth(url);
+    return this.withTotalCount(result).json;
   };
 
-  fetchItemsByQuery = (
-    query: string,
-    page: number = 1,
-    perPage: number = 20,
-  ): Promise<PagingResponse> => {
+  fetchItemsByQuery = async (query: string, page: number = 1, perPage: number = 20) => {
     const path: string = '/api/v2/items';
     const url = createUrl(this._baseUrl + path, { query, page, per_page: perPage });
-    return this.authedFetch(url).then(onFulfillPaging);
+    const result = await this.fetchWithAuth(url);
+    return this.withTotalCount(result).json;
   };
 
-  fetchAuthenticatedUser = (): Promise<JSON> => {
+  fetchAuthenticatedUser = async () => {
     const path = '/api/v2/authenticated_user';
-    return this.authedFetch(createUrl(this._baseUrl + path)).then(onFulfill);
+    const url = createUrl(this._baseUrl + path);
+    const result = await this.fetchWithAuth(url);
+    return result.json;
   };
 
-  fetchFollowingTags = (
-    userId: string,
-    page: number = 1,
-    perPage: number = 20,
-  ): Promise<PagingResponse> => {
+  fetchFollowingTags = async (userId: string, page: number = 1, perPage: number = 20) => {
     const path = `/api/v2/users/${userId}/following_tags`;
     const url = createUrl(this._baseUrl + path, { page, per_page: perPage });
-    return this.authedFetch(url).then(onFulfillPaging);
+    const result = await this.fetchWithAuth(url);
+    return this.withTotalCount(result).json;
   };
 
-  fetchStockItems = (
-    userId: string,
-    page: number = 1,
-    perPage: number = 20,
-  ): Promise<PagingResponse> => {
+  fetchStockItems = async (userId: string, page: number = 1, perPage: number = 20) => {
     const path = `/api/v2/users/${userId}/stocks`;
     const url = createUrl(this._baseUrl + path, { page, per_page: perPage });
-    return this.authedFetch(url).then(onFulfillPaging);
+    const result = await this.fetchWithAuth(url);
+    return this.withTotalCount(result).json;
   };
 }
